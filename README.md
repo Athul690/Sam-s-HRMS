@@ -1,4 +1,4 @@
-# 🏢 Sam's HRMS : A Completely Free Local Browser Based HRMS & Payroll Suite
+# 🏢 Sam's HRMS : A Completely Free, Browser Based HRMS & Payroll Suite
 
 A complete, self-contained **Human Resource Management System (HRMS) & Statutory Payroll Suite** that runs entirely inside your web browser. 
 And the best thing, its Completely free 
