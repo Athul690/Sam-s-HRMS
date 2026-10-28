@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local HRMS & Payroll Enterprise Suite</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #d97706;
+      --info: #0284c7;
+      --purple: #7c3aed;
+      --pink: #db2777;
+      --teal: #0d9488;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --sidebar-bg: #0f172a;
+      --sidebar-hover: #1e293b;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --modal-bg: #ffffff;
+      --input-bg: #ffffff;
+      --th-bg: #f1f5f9;
+      --sidebar-width: 265px;
+    }
+
+    [data-theme="dark"] {
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --info: #38bdf8;
+      --purple: #a78bfa;
+      --pink: #f472b6;
+      --teal: #2dd4bf;
+      --bg: #0b1120;
+      --card-bg: #1e293b;
+      --sidebar-bg: #020617;
+      --sidebar-hover: #0f172a;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --modal-bg: #1e293b;
+      --input-bg: #0f172a;
+      --th-bg: #0f172a;
+    }
+
+    * { box-sizing: border-box; transition: background-color 0.15s, border-color 0.15s; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      padding: 16px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand img {
+      max-height: 28px;
+      max-width: 28px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    .nav-tabs {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-item:hover { background-color: var(--sidebar-hover); color: #fff; }
+    .nav-item.active { background-color: var(--primary); color: #fff; font-weight: 600; }
+
+    .sidebar-footer {
+      padding: 12px 20px;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      background: var(--card-bg);
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #fee2e2;
+      color: #991b1b;
+      user-select: none;
+    }
+
+    .status-connected { background: #dcfce7; color: #166534; }
+
+    .content-area {
+      padding: 20px 24px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    h2, h3, h4 { margin-top: 0; color: var(--text); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    input, select, textarea {
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 13px;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    textarea { resize: vertical; min-height: 55px; }
+    input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 13px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+    }
+
+    button:hover:not(:disabled) { background-color: var(--primary-hover); }
+    button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+
+    .btn-secondary { background-color: #475569; }
+    .btn-secondary:hover:not(:disabled) { background-color: #334155; }
+    .btn-success { background-color: var(--success); }
+    .btn-warning { background-color: var(--warning); }
+    .btn-purple { background-color: var(--purple); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: var(--th-bg); }
+
+    .btn-danger {
+      background-color: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+    .btn-danger:hover { background-color: #fee2e2; }
+
+    .table-container { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12.5px;
+      margin-top: 8px;
+    }
+
+    th, td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+    th { background-color: var(--th-bg); color: var(--text-muted); font-weight: 600; }
+
+    /* Matrix Grid */
+    .matrix-table th, .matrix-table td {
+      padding: 4px 6px;
+      text-align: center;
+      font-size: 11px;
+      border: 1px solid var(--border);
+    }
+    .cell-P { background: #dcfce7; color: #166534; font-weight: bold; }
+    .cell-A { background: #fee2e2; color: #991b1b; font-weight: bold; }
+    .cell-HD { background: #fef3c7; color: #92400e; font-weight: bold; }
+    .cell-L { background: #e0f2fe; color: #075985; font-weight: bold; }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: var(--modal-bg);
+      color: var(--text);
+      width: 100%;
+      max-width: 860px;
+      border-radius: 8px;
+      padding: 22px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .section-divider {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 5px;
+      margin: 16px 0 10px 0;
+      text-transform: uppercase;
+    }
+
+    .stats-card-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .stat-title { font-size: 11px; color: var(--text-muted); font-weight: 700; }
+    .stat-value { font-size: 22px; font-weight: 700; margin-top: 5px; }
+    .stat-subtext { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    /* Donut Chart Grid */
+    .donut-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .donut-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .donut-header {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .donut-body { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+
+    .donut-svg-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+      margin: 0 auto;
+    }
+
+    .donut-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .donut-segment { fill: none; stroke-width: 6.5; transition: stroke-dasharray 0.4s ease; }
+
+    .donut-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .donut-center-val { font-size: 14px; font-weight: 800; color: var(--text); }
+    .donut-center-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+
+    .donut-legend { flex-grow: 1; display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
+    .legend-row { display: flex; justify-content: space-between; font-size: 11.5px; padding-bottom: 3px; border-bottom: 1px dashed var(--border); }
+    .legend-label { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .legend-val { font-weight: 700; }
+
+    .tag-override {
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .run-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .run-locked { background: #dcfce7; color: #166534; }
+
+    .print-sheet {
+      border: 2px solid #0f172a;
+      padding: 24px;
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      .print-sheet, .print-sheet * { visibility: visible; }
+      .modal-backdrop { position: absolute; top: 0; left: 0; background: none; padding: 0; }
+      .modal-content { box-shadow: none; padding: 0; max-width: 100%; background: #fff; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Sidebar -->
+  <aside class="sidebar">
+    <div class="brand" id="brandDisplay">
+      <img id="sidebarLogo" src="" style="display:none;" alt="Logo">
+      <span id="brandName">🏢 Local HRMS</span>
+    </div>
+    <ul class="nav-tabs">
+      <li class="nav-item active" onclick="switchTab('dashboard')">📊 Summary & Analytics</li>
+      <li class="nav-item" onclick="switchTab('employee-list')">📋 Employees & Docs</li>
+      <li class="nav-item" onclick="switchTab('attendance')">⏱️ Attendance & Matrix</li>
+      <li class="nav-item" onclick="switchTab('leave')">🏖️ Leaves & Quotas</li>
+      <li class="nav-item" onclick="switchTab('expenses')">🧾 Expense Claims</li>
+      <li class="nav-item" onclick="switchTab('loans')">💳 Loans & Advances</li>
+      <li class="nav-item" onclick="switchTab('assets')">💻 Company Assets</li>
+      <li class="nav-item" onclick="switchTab('payroll-engine')">💵 Payroll & Statutory</li>
+      <li class="nav-item" onclick="switchTab('fnf-settlement')">🤝 Exit & FnF Settlement</li>
+      <li class="nav-item" onclick="switchTab('shifts-depts')">🏢 Shifts, Depts & Holidays</li>
+      <li class="nav-item" onclick="switchTab('settings')">⚙️ Settings & Backup</li>
+    </ul>
+    <div class="sidebar-footer">
+      <span style="font-size: 12px; color: #94a3b8;">Theme:</span>
+      <button class="btn-outline" style="padding: 4px 8px; font-size: 12px; color:#fff;" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    <header class="top-bar">
+      <h3 style="margin: 0; font-size: 15px; font-weight: 600;" id="pageHeading">Summary & Analytics</h3>
+      <span id="folderStatus" class="status-badge">Connecting...</span>
+    </header>
+
+    <div class="content-area">
+
+      <!-- 0. EXECUTIVE SUMMARY -->
+      <section id="dashboard" class="tab-section active">
+        <div class="stats-card-group">
+          <div class="stat-box">
+            <div class="stat-title">ACTIVE WORKFORCE</div>
+            <div class="stat-value" id="dashTotalStaff">0</div>
+            <div class="stat-subtext" id="dashActiveStaff">0 Total Registered</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-title">EST. MONTHLY CTC</div>
+            <div class="stat-value" id="dashPayrollOutflow" style="color:var(--primary);">₹0</div>
+            <div class="stat-subtext" id="dashPayrollEmpShare">Gross + Statutory Shares</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-title">TODAY'S ATTENDANCE</div>
+            <div class="stat-value" id="dashTodayPresent" style="color:var(--success);">0</div>
+            <div class="stat-subtext" id="dashTodayStats">0 Absent | 0 On Leave</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-title">LOANS & UNPAID CLAIMS</div>
+            <div class="stat-value" id="dashActiveLoans" style="color:var(--warning);">₹0</div>
+            <div class="stat-subtext" id="dashLoanSubtext">0 Active EMIs | ₹0 Claims</div>
+          </div>
+        </div>
+
+        <div class="donut-grid">
+          <div class="donut-card">
+            <div class="donut-header">
+              <span>💰 Monthly Payroll Composition</span>
+              <span style="font-size:11px; color:var(--text-muted);">CTC Split</span>
+            </div>
+            <div class="donut-body" id="donutPayrollBox"></div>
+          </div>
+          <div class="donut-card">
+            <div class="donut-header">
+              <span>🏢 Department Salary Share</span>
+              <span style="font-size:11px; color:var(--text-muted);">Gross Allocation</span>
+            </div>
+            <div class="donut-body" id="donutDeptBox"></div>
+          </div>
+          <div class="donut-card">
+            <div class="donut-header">
+              <span>⏱️ Today's Attendance Breakdown</span>
+              <span style="font-size:11px; color:var(--text-muted);" id="dashTodayDateLabel">Today</span>
+            </div>
+            <div class="donut-body" id="donutAttendanceBox"></div>
+          </div>
+          <div class="donut-card">
+            <div class="donut-header">
+              <span>👥 Workforce Demographics</span>
+              <span style="font-size:11px; color:var(--text-muted);">Gender Split</span>
+            </div>
+            <div class="donut-body" id="donutGenderBox"></div>
+          </div>
+        </div>
+
+        <div class="donut-grid">
+          <div class="card" style="margin-bottom:0;">
+            <h4>📅 Upcoming Company Holidays</h4>
+            <table>
+              <thead><tr><th>Date</th><th>Holiday</th></tr></thead>
+              <tbody id="dashHolidayList"></tbody>
+            </table>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <h4>🎂 Celebrations & Quick Actions</h4>
+            <div id="dashBirthdaysList" style="font-size:12.5px; margin-bottom:14px;"></div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button onclick="openEmployeeModal()">➕ Add Employee</button>
+              <button class="btn-success" onclick="switchTab('attendance')">⏱️ Bulk Attendance</button>
+              <button class="btn-outline" onclick="switchTab('payroll-engine')">💵 Run Payroll</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. EMPLOYEE DIRECTORY, DOCS & LETTERS -->
+      <section id="employee-list" class="tab-section">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; gap:10px; flex-grow:1; max-width:520px;">
+              <input type="text" id="searchEmp" placeholder="Search by name, role, ID, or phone...">
+              <select id="filterDept" style="max-width:180px;">
+                <option value="">All Departments</option>
+              </select>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-outline" onclick="exportEmployeeCSV()">📥 Export Directory CSV</button>
+              <button onclick="openEmployeeModal()">➕ Add New Employee</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th><th>Name</th><th>Department</th><th>Designation</th><th>Status</th><th>Base Gross</th><th>Docs / Letters / Actions</th>
+                </tr>
+              </thead>
+              <tbody id="empTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. ATTENDANCE & MONTHLY MATRIX GRID -->
+      <section id="attendance" class="tab-section">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <h3 style="margin:0;">Daily Attendance Logger</h3>
+            <button class="btn-success" onclick="markAllPresentToday()">⚡ Mark All Active Staff Present for Selected Date</button>
+          </div>
+          <form id="attendanceForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="attendDate" required>
+              </div>
+              <div class="form-group">
+                <label>Employee</label>
+                <select id="attendEmpSelect" required onchange="syncEmployeeDefaultShift()"></select>
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="attendStatus" required>
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+                  <option value="Half Day">Half Day</option>
+                  <option value="On Leave">On Leave</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Check In Time</label>
+                <input type="time" id="attendIn" value="09:00">
+              </div>
+              <div class="form-group">
+                <label>Check Out Time</label>
+                <input type="time" id="attendOut" value="18:00">
+              </div>
+            </div>
+
+            <div style="background:var(--th-bg); border:1px dashed var(--border); border-radius:6px; padding:10px; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" id="attendOverrideCheck" style="width:auto; cursor:pointer;" onchange="toggleShiftOverrideInput()">
+                <label for="attendOverrideCheck" style="cursor:pointer; margin:0; text-transform:none; font-size:12.5px; font-weight:600;">
+                  🔄 Temporary Shift Change for this specific date
+                </label>
+              </div>
+              <div id="overrideShiftBox" style="display:none; margin-top:8px;">
+                <div class="form-grid" style="margin-bottom:0;">
+                  <div class="form-group">
+                    <label>Select Temporary Shift</label>
+                    <select id="attendOverrideShiftSelect"></select>
+                  </div>
+                  <div class="form-group">
+                    <label>Override Reason / Notes</label>
+                    <input type="text" id="attendOverrideReason" placeholder="e.g. Project deployment">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="submit">Log Attendance Entry</button>
+          </form>
+        </div>
+
+        <!-- Monthly Matrix Grid Card -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+            <h3 style="margin:0;">📅 Monthly Attendance Matrix Grid</h3>
+            <input type="month" id="matrixMonthInput" style="width:170px;" onchange="renderAttendanceMatrix()">
+          </div>
+          <div class="table-container" id="attendanceMatrixBox"></div>
+        </div>
+
+        <div class="card">
+          <h3>Recent Attendance Logs</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Employee</th><th>Shift Taken</th><th>Status</th><th>In</th><th>Out</th><th>Hours</th><th>Action</th></tr>
+              </thead>
+              <tbody id="attendanceTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. LEAVE MANAGEMENT & QUOTA TRACKER -->
+      <section id="leave" class="tab-section">
+        <div class="card">
+          <h3>Apply for Leave</h3>
+          <form id="leaveForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Employee</label>
+                <select id="leaveEmpSelect" required></select>
+              </div>
+              <div class="form-group">
+                <label>Leave Type</label>
+                <select id="leaveType" required>
+                  <option value="Casual Leave">Casual Leave (CL)</option>
+                  <option value="Sick Leave">Sick Leave (SL)</option>
+                  <option value="Earned Leave">Earned Leave (EL)</option>
+                  <option value="Loss of Pay">Loss of Pay (LOP / Unpaid)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>From Date</label>
+                <input type="date" id="leaveFrom" required>
+              </div>
+              <div class="form-group">
+                <label>To Date</label>
+                <input type="date" id="leaveTo" required>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Reason / Notes</label>
+              <input type="text" id="leaveReason" placeholder="Reason for leave">
+            </div>
+            <button type="submit">Submit Leave Request</button>
+          </form>
+        </div>
+
+        <!-- Leave Balance & Quota Summary -->
+        <div class="card">
+          <h3>📊 Employee Annual Leave Quota Balances</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Employee</th><th>Casual Leave (Used / Quota)</th><th>Sick Leave (Used / Quota)</th><th>Earned Leave (Used / Quota)</th><th>LOP Days Taken</th></tr>
+              </thead>
+              <tbody id="leaveQuotaTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Leave History</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Employee</th><th>Type</th><th>Duration</th><th>Days</th><th>Reason</th><th>Action</th></tr>
+              </thead>
+              <tbody id="leaveTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. EXPENSE CLAIMS & REIMBURSEMENTS -->
+      <section id="expenses" class="tab-section">
+        <div class="card">
+          <h3>Log Employee Expense / Reimbursement Claim</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+            Approved claims are automatically added as non-taxable reimbursements in that month's payroll run.
+          </p>
+          <form id="expenseForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Employee</label>
+                <select id="expEmpSelect" required></select>
+              </div>
+              <div class="form-group">
+                <label>Expense Date</label>
+                <input type="date" id="expDate" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="expCategory" required>
+                  <option value="Travel / Fuel">Travel / Fuel</option>
+                  <option value="Client Meals">Client Meals</option>
+                  <option value="Internet / Phone">Internet / Phone</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Medical Reimbursement">Medical</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Claim Amount</label>
+                <input type="number" id="expAmount" required placeholder="e.g. 1200">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Description / Bill Ref</label>
+              <input type="text" id="expNotes" placeholder="Bill # or trip details">
+            </div>
+            <button type="submit">Submit Approved Reimbursement</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Expense Reimbursement Register</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Employee</th><th>Category</th><th>Amount</th><th>Notes</th><th>Action</th></tr>
+              </thead>
+              <tbody id="expenseTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. LOANS & SALARY ADVANCES -->
+      <section id="loans" class="tab-section">
+        <div class="card">
+          <h3>Issue Salary Advance / Employee Loan</h3>
+          <form id="loanForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Employee</label>
+                <select id="loanEmpSelect" required></select>
+              </div>
+              <div class="form-group">
+                <label>Total Loan / Advance Amount</label>
+                <input type="number" id="loanAmount" required placeholder="e.g. 15000">
+              </div>
+              <div class="form-group">
+                <label>Monthly EMI Deduction</label>
+                <input type="number" id="loanEmi" required placeholder="e.g. 2500">
+              </div>
+              <div class="form-group">
+                <label>Issue Date</label>
+                <input type="date" id="loanDate" required>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Remarks / Purpose</label>
+              <input type="text" id="loanNotes" placeholder="e.g. Medical advance, personal loan">
+            </div>
+            <button type="submit">Sanction Loan / Advance</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Active & Historical Loans</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Employee</th><th>Principal</th><th>Monthly EMI</th><th>Remaining Balance</th><th>Status</th><th>Action</th></tr>
+              </thead>
+              <tbody id="loanTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. COMPANY ASSET TRACKER -->
+      <section id="assets" class="tab-section">
+        <div class="card">
+          <h3>Allocate Company Asset / Equipment</h3>
+          <form id="assetForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Assign To Employee</label>
+                <select id="assetEmpSelect" required></select>
+              </div>
+              <div class="form-group">
+                <label>Asset Name / Model</label>
+                <input type="text" id="assetName" required placeholder="e.g. Dell Latitude 5420, iPhone 15">
+              </div>
+              <div class="form-group">
+                <label>Serial / Tag Number</label>
+                <input type="text" id="assetSerial" required placeholder="e.g. SN-99281-X">
+              </div>
+              <div class="form-group">
+                <label>Asset Value</label>
+                <input type="number" id="assetValue" value="45000">
+              </div>
+              <div class="form-group">
+                <label>Issue Date</label>
+                <input type="date" id="assetDate" required>
+              </div>
+            </div>
+            <button type="submit">Issue Asset to Employee</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Allocated Hardware & Asset Inventory</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Tag / Serial</th><th>Asset Name</th><th>Assigned To</th><th>Issue Date</th><th>Value</th><th>Status</th><th>Action</th></tr>
+              </thead>
+              <tbody id="assetTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. PAYROLL & STATUTORY RETURNS -->
+      <section id="payroll-engine" class="tab-section">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+              <div>
+                <label style="display:block; margin-bottom:4px;">Payroll Period</label>
+                <input type="month" id="payrollMonth" style="width:165px;" onchange="calculateMonthlyPayroll()">
+              </div>
+              <div>
+                <label style="display:block; margin-bottom:4px;">Standard Days</label>
+                <input type="number" id="payrollStandardDays" value="30" style="width:85px;" oninput="calculateMonthlyPayroll()">
+              </div>
+              <div style="margin-top:18px;">
+                <span id="runStatusBadge" class="run-badge">Draft Run</span>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
+              <button class="btn-success" onclick="lockAndSavePayrollRun()">🔒 Lock & Finalize</button>
+              <button class="btn-outline" onclick="exportBankCSV()">🏦 Bank NEFT CSV</button>
+              <button class="btn-outline" onclick="exportEpfECR()">🏛️ EPF ECR (.txt)</button>
+              <button class="btn-outline" onclick="exportEsicCSV()">🏥 ESIC Return (.csv)</button>
+              <button class="btn-outline" onclick="exportPayrollRegisterCSV()">📊 Full Register</button>
+            </div>
+          </div>
+
+          <div class="stats-card-group">
+            <div class="stat-box">
+              <div class="stat-title">TOTAL GROSS PAY</div>
+              <div class="stat-value" id="statGross">₹0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-title">TOTAL DEDUCTIONS</div>
+              <div class="stat-value" id="statDeductions" style="color:var(--danger);">₹0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-title">NET DISBURSED (+REIMB)</div>
+              <div class="stat-value" id="statNet" style="color:var(--success);">₹0</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-title">TOTAL COMPANY CTC</div>
+              <div class="stat-value" id="statCTC">₹0</div>
+            </div>
+          </div>
+
+          <div class="donut-grid">
+            <div class="donut-card">
+              <div class="donut-header">
+                <span>🍩 Period CTC Breakdown</span>
+                <span style="font-size:11px; color:var(--text-muted);">Net vs Statutory vs Employer</span>
+              </div>
+              <div class="donut-body" id="payrollRunDonut1"></div>
+            </div>
+            <div class="donut-card">
+              <div class="donut-header">
+                <span>🏢 Period Department Cost</span>
+                <span style="font-size:11px; color:var(--text-muted);">Actual Earned Gross</span>
+              </div>
+              <div class="donut-body" id="payrollRunDonut2"></div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Days (Paid/LOP)</th>
+                  <th>Earned Gross</th>
+                  <th>Bonus/OT/Reimb</th>
+                  <th>EPF / ESI</th>
+                  <th>TDS / PT / Loan</th>
+                  <th>Net Disbursed</th>
+                  <th>Employer Share</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="payrollTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. EXIT & FULL AND FINAL (FnF) SETTLEMENT CALCULATOR -->
+      <section id="fnf-settlement" class="tab-section">
+        <div class="card">
+          <h3>🤝 Resignation & Full and Final (FnF) Settlement Calculator</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
+            Computes final settlement including unpaid salary days, Earned Leave encashment, Gratuity (15/26 formula if service ≥ 5 yrs), minus active loan balances and unreturned asset recoveries.
+          </p>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Select Exiting Employee</label>
+              <select id="fnfEmpSelect" onchange="calculateFnFPreview()"></select>
+            </div>
+            <div class="form-group">
+              <label>Last Working Date</label>
+              <input type="date" id="fnfExitDate" onchange="calculateFnFPreview()">
+            </div>
+            <div class="form-group">
+              <label>Unpaid Salary Days Worked in Final Month</label>
+              <input type="number" id="fnfPayableDays" value="15" oninput="calculateFnFPreview()">
+            </div>
+            <div class="form-group">
+              <label>Notice Period Recovery / Asset Damage Deduction</label>
+              <input type="number" id="fnfRecoveryDed" value="0" oninput="calculateFnFPreview()">
+            </div>
+          </div>
+          <div id="fnfPreviewArea" style="margin-top:16px;"></div>
+        </div>
+      </section>
+
+      <!-- 9. SHIFTS, DEPTS & HOLIDAYS -->
+      <section id="shifts-depts" class="tab-section">
+        <div class="form-grid">
+          <div class="card">
+            <h3>Company Departments</h3>
+            <div style="display:flex; gap:10px; margin-bottom:12px;">
+              <input type="text" id="deptInput" placeholder="New Department Name">
+              <button id="addDeptBtn">Add</button>
+            </div>
+            <table>
+              <thead><tr><th>Department</th><th>Action</th></tr></thead>
+              <tbody id="deptTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h3>Working Shifts</h3>
+            <form id="shiftForm" style="margin-bottom:15px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <input type="text" id="shiftName" placeholder="Shift Name" required>
+                <div style="display:flex; gap:8px;">
+                  <input type="time" id="shiftStart" required>
+                  <input type="time" id="shiftEnd" required>
+                </div>
+                <button type="submit">Add Shift</button>
+              </div>
+            </form>
+            <table>
+              <thead><tr><th>Shift</th><th>Timings</th><th>Action</th></tr></thead>
+              <tbody id="shiftTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Annual Company Holidays</h3>
+          <form id="holidayForm" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+            <input type="date" id="holidayDate" required style="max-width:180px;">
+            <input type="text" id="holidayName" placeholder="Holiday Title" required style="flex-grow:1;">
+            <button type="submit">Add Holiday</button>
+          </form>
+          <table>
+            <thead><tr><th>Date</th><th>Holiday Name</th><th>Action</th></tr></thead>
+            <tbody id="holidayTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 10. SETTINGS & BACKUP -->
+      <section id="settings" class="tab-section">
+        <div class="card" style="border-left: 4px solid var(--primary);">
+          <h3>💾 Local Data Backup & Restore</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <button class="btn-success" onclick="downloadBackup()">📥 Download Backup (.json)</button>
+            <label class="btn-outline" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px; margin:0; padding:8px 14px; font-size:12px; border-radius:6px;">
+              📤 Restore from Backup File
+              <input type="file" id="restoreFileInput" accept=".json" style="display:none;" onchange="restoreBackup(event)">
+            </label>
+            <button class="btn-danger" onclick="factoryResetDatabase()">⚠️ Factory Reset App</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Company Profile, Leave Quotas & Compliance Settings</h3>
+          <form id="settingsCompanyForm">
+            <div class="section-divider">Branding & Logo</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Company Logo</label>
+                <input type="file" id="settingLogoInput" accept="image/*">
+              </div>
+              <div class="form-group">
+                <label>Logo Preview</label>
+                <div style="height:40px; display:flex; align-items:center;">
+                  <img id="logoPreview" src="" style="max-height:40px; max-width:120px; display:none; border-radius:4px;">
+                </div>
+              </div>
+            </div>
+
+            <div class="section-divider">General Details</div>
+            <div class="form-grid">
+              <div class="form-group"><label>Company Legal Name</label><input type="text" id="settingCompName" required></div>
+              <div class="form-group"><label>Branches / Locations</label><input type="text" id="settingCompBranches"></div>
+              <div class="form-group"><label>CIN / Registration No.</label><input type="text" id="settingCompReg"></div>
+              <div class="form-group"><label>GSTIN / Tax ID</label><input type="text" id="settingCompTax"></div>
+              <div class="form-group"><label>Official Email</label><input type="email" id="settingCompEmail"></div>
+              <div class="form-group"><label>Official Phone</label><input type="text" id="settingCompPhone"></div>
+              <div class="form-group"><label>Currency Symbol</label><input type="text" id="settingCurrency" value="₹"></div>
+              <div class="form-group"><label>Standard Professional Tax (PT)</label><input type="number" id="settingDefaultPT" value="200"></div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label>Headquarters Office Address</label>
+              <textarea id="settingCompAddress"></textarea>
+            </div>
+
+            <div class="section-divider">Annual Leave Quotas (Days / Year)</div>
+            <div class="form-grid">
+              <div class="form-group"><label>Casual Leave (CL) Quota</label><input type="number" id="settingQuotaCL" value="12" required></div>
+              <div class="form-group"><label>Sick Leave (SL) Quota</label><input type="number" id="settingQuotaSL" value="10" required></div>
+              <div class="form-group"><label>Earned Leave (EL) Quota</label><input type="number" id="settingQuotaEL" value="15" required></div>
+            </div>
+
+            <div class="section-divider">Statutory Rules & Overtime</div>
+            <div class="form-grid">
+              <div class="form-group"><label>Employee EPF (%)</label><input type="number" step="0.01" id="settingEpfRate" value="12" required></div>
+              <div class="form-group"><label>Employer EPF (%)</label><input type="number" step="0.01" id="settingEmployerEpfRate" value="12" required></div>
+              <div class="form-group"><label>Employee ESI (%)</label><input type="number" step="0.01" id="settingEsiRate" value="0.75" required></div>
+              <div class="form-group"><label>Employer ESI (%)</label><input type="number" step="0.01" id="settingEmployerEsiRate" value="3.25" required></div>
+              <div class="form-group"><label>ESI Wage Limit</label><input type="number" id="settingEsiLimit" value="21000" required></div>
+              <div class="form-group"><label>Overtime Multiplier</label><input type="number" step="0.1" id="settingOtMultiplier" value="1.5" required></div>
+            </div>
+
+            <button type="submit" id="saveSettingsBtn">Save All Settings</button>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ADD / EDIT EMPLOYEE MODAL -->
+  <div id="employeeModal" class="modal-backdrop">
+    <div class="modal-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 id="modalTitle" style="margin:0;">Add New Employee</h3>
+        <button class="btn-outline" onclick="closeEmployeeModal()">✕</button>
+      </div>
+
+      <form id="fullEmpForm">
+        <input type="hidden" id="editEmpId">
+
+        <div class="section-divider">1. Personal & Contact Information</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name *</label><input type="text" id="mName" required></div>
+          <div class="form-group">
+            <label>Gender *</label>
+            <select id="mGender" required>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Non-Binary">Non-Binary</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Date of Birth *</label><input type="date" id="mDob" required onchange="calculateAge()"></div>
+          <div class="form-group"><label>Age</label><input type="number" id="mAge" readonly style="background:var(--th-bg);"></div>
+          <div class="form-group"><label>Blood Group</label><input type="text" id="mBlood" placeholder="O+, A+, B+"></div>
+          <div class="form-group"><label>Mobile Number *</label><input type="tel" id="mPhone" required></div>
+          <div class="form-group"><label>Official Email</label><input type="email" id="mEmail"></div>
+          <div class="form-group"><label>Emergency Contact</label><input type="text" id="mEmergency" placeholder="Name & Phone"></div>
+        </div>
+
+        <div class="section-divider">2. Employment & Education</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Department *</label><select id="mDept" required></select></div>
+          <div class="form-group"><label>Designation / Role *</label><input type="text" id="mRole" required></div>
+          <div class="form-group">
+            <label>Employment Status</label>
+            <select id="mStatus">
+              <option value="Active">Active</option>
+              <option value="Probation">Probation</option>
+              <option value="Notice Period">Notice Period</option>
+              <option value="Resigned">Resigned / Exited</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Employment Type</label>
+            <select id="mType">
+              <option value="Full-Time">Full-Time</option>
+              <option value="Part-Time">Part-Time</option>
+              <option value="Contract">Contract</option>
+              <option value="Intern">Intern</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Default Assigned Shift</label><select id="mShift"></select></div>
+          <div class="form-group"><label>Joining Date *</label><input type="date" id="mJoinDate" required></div>
+          <div class="form-group"><label>Qualification / Degree</label><input type="text" id="mEducation" placeholder="B.Tech, MBA..."></div>
+          <div class="form-group"><label>Prior Experience (Yrs)</label><input type="number" step="0.5" id="mExp" value="0"></div>
+          <div class="form-group"><label>Residential Address</label><input type="text" id="mAddress"></div>
+        </div>
+
+        <div class="section-divider">3. Monthly Salary Structure</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Basic Salary (Monthly) *</label><input type="number" id="mBasicSalary" required oninput="recalcSalaryStructure()"></div>
+          <div class="form-group"><label>HRA (House Rent Allowance)</label><input type="number" id="mHra" value="0"></div>
+          <div class="form-group"><label>Conveyance Allowance</label><input type="number" id="mConveyance" value="0"></div>
+          <div class="form-group"><label>Special / Medical Allowance</label><input type="number" id="mSpecialAllowance" value="0"></div>
+          <div class="form-group"><label>Standard Monthly TDS (Tax)</label><input type="number" id="mTds" value="0"></div>
+        </div>
+
+        <div class="section-divider">4. Banking & Identity Numbers</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Bank Account Number</label><input type="text" id="mBankAcc"></div>
+          <div class="form-group"><label>Bank IFSC Code</label><input type="text" id="mBankIfsc"></div>
+          <div class="form-group"><label>Bank Name</label><input type="text" id="mBankName"></div>
+          <div class="form-group"><label>PAN Card Number</label><input type="text" id="mPan"></div>
+          <div class="form-group"><label>EPF UAN Number</label><input type="text" id="mUan"></div>
+          <div class="form-group"><label>ESIC Insurance Number</label><input type="text" id="mEsic"></div>
+        </div>
+
+        <div style="margin-top:18px; display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn-secondary" onclick="closeEmployeeModal()">Cancel</button>
+          <button type="submit">Save Employee Details</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- LOCAL DOCUMENT VAULT MODAL -->
+  <div id="docVaultModal" class="modal-backdrop">
+    <div class="modal-content" style="max-width:600px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 id="docVaultTitle" style="margin:0;">📂 Employee Document Vault</h3>
+        <button class="btn-outline" onclick="closeDocVaultModal()">✕</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-muted);">
+        Files uploaded here are saved directly as raw files inside your local <code>/documents/EMP_ID/</code> folder.
+      </p>
+      <input type="hidden" id="docVaultEmpId">
+      <div style="display:flex; gap:10px; margin-bottom:16px; align-items:center;">
+        <input type="file" id="vaultFileInput">
+        <button onclick="uploadFileToLocalVault()">⬆️ Save to Folder</button>
+      </div>
+      <table>
+        <thead><tr><th>File Name</th><th>Size</th><th>Action</th></tr></thead>
+        <tbody id="docVaultTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAYROLL ADJUSTMENT MODAL -->
+  <div id="adjustmentModal" class="modal-backdrop">
+    <div class="modal-content" style="max-width:520px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 id="adjModalTitle" style="margin:0;">Payroll Adjustment</h3>
+        <button class="btn-outline" onclick="closeAdjustmentModal()">✕</button>
+      </div>
+      <form id="adjForm">
+        <input type="hidden" id="adjEmpId">
+        <div class="form-group" style="margin-bottom:12px;"><label>Performance Bonus / Incentives</label><input type="number" id="adjBonus" value="0"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label>Overtime Hours Worked</label><input type="number" step="0.5" id="adjOtHours" value="0"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label>Additional Ad-hoc Deduction</label><input type="number" id="adjCustomDeduction" value="0"></div>
+        <div class="form-group" style="margin-bottom:16px;"><label>Adjustment Remarks</label><input type="text" id="adjRemarks"></div>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn-secondary" onclick="closeAdjustmentModal()">Cancel</button>
+          <button type="submit">Apply Adjustment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- UNIVERSAL PRINT / LETTER / ID CARD / PAYSLIP MODAL -->
+  <div id="payslipModal" class="modal-backdrop">
+    <div class="modal-content" style="max-width:780px;">
+      <div class="no-print" id="letterSelectorBar" style="display:none; margin-bottom:14px; gap:8px; flex-wrap:wrap; border-bottom:1px solid var(--border); padding-bottom:12px;">
+        <button class="btn-outline" onclick="renderHrDocument('offer')">📄 Offer Letter</button>
+        <button class="btn-outline" onclick="renderHrDocument('experience')">📜 Experience & Relieving</button>
+        <button class="btn-outline" onclick="renderHrDocument('increment')">📈 Increment Letter</button>
+        <button class="btn-purple" onclick="renderHrDocument('idcard')">🪪 Employee ID Card</button>
+      </div>
+      <div id="payslipPrintArea" class="print-sheet"></div>
+      <div class="no-print" style="margin-top: 18px; display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn-secondary" onclick="closePayslip()">Close</button>
+        <button onclick="window.print()">🖨️ Print / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let db = {
+      theme: 'light',
+      settings: {
+        companyName: "Acme Enterprise Solutions",
+        branches: "Headquarters, Tech Park",
+        registrationNo: "CIN: U72200KL2024PTC001",
+        taxId: "GSTIN: 32AAAAA0000A1Z5",
+        email: "hr@acme.com",
+        phone: "+91 98765 43210",
+        address: "Cyber City, Kerala, India",
+        logo: "",
+        epfRate: 12,
+        employerEpfRate: 12,
+        esiRate: 0.75,
+        employerEsiRate: 3.25,
+        esiLimit: 21000,
+        defaultPT: 200,
+        otMultiplier: 1.5,
+        quotaCL: 12,
+        quotaSL: 10,
+        quotaEL: 15,
+        currency: "₹"
+      },
+      departments: ["Human Resources", "Engineering", "Accounts", "Operations", "Marketing"],
+      shifts: [
+        { id: 1, name: "General Day", start: "09:00", end: "18:00" },
+        { id: 2, name: "Morning Shift", start: "06:00", end: "15:00" },
+        { id: 3, name: "Night Shift", start: "21:00", end: "06:00" }
+      ],
+      holidays: [
+        { date: "2026-01-26", name: "Republic Day" },
+        { date: "2026-05-01", name: "May Day" },
+        { date: "2026-08-15", name: "Independence Day" },
+        { date: "2026-10-02", name: "Gandhi Jayanti" }
+      ],
+      employees: [],
+      attendance: [],
+      leaves: [],
+      expenses: [],
+      loans: [],
+      assets: [],
+      payrollAdjustments: {},
+      lockedRuns: {}
+    };
+
+    let rootDirHandle = null;
+    let currentPayrollCache = [];
+    let activeLetterEmpId = null;
+
+    // --- SVG DONUT CHART GENERATOR ---
+    function createDonutChartHTML(segments, centerValue, centerLabel) {
+      const total = segments.reduce((sum, s) => sum + s.value, 0);
+      let cumulativePercent = 0;
+      let circlesHTML = `<circle cx="21" cy="21" r="15.91549431" fill="none" stroke="var(--border)" stroke-width="6"></circle>`;
+
+      if (total > 0) {
+        segments.forEach(seg => {
+          if (seg.value <= 0) return;
+          const pct = (seg.value / total) * 100;
+          const dashArray = `${pct} ${100 - pct}`;
+          const dashOffset = 100 - cumulativePercent;
+          cumulativePercent += pct;
+          circlesHTML += `<circle class="donut-segment" cx="21" cy="21" r="15.91549431" stroke="${seg.color}" stroke-dasharray="${dashArray}" stroke-dashoffset="${dashOffset}"><title>${seg.label}: ${seg.formatted || seg.value} (${Math.round(pct)}%)</title></circle>`;
+        });
+      }
+
+      let legendHTML = '';
+      segments.forEach(seg => {
+        const pct = total > 0 ? Math.round((seg.value / total) * 100) : 0;
+        legendHTML += `
+          <div class="legend-row">
+            <span class="legend-label"><span class="legend-dot" style="background:${seg.color};"></span>${seg.label}</span>
+            <span class="legend-val">${seg.formatted || seg.value} <span style="font-weight:400; color:var(--text-muted);">(${pct}%)</span></span>
+          </div>`;
+      });
+
+      return `
+        <div class="donut-svg-wrap">
+          <svg viewBox="0 0 42 42" class="donut-svg">${circlesHTML}</svg>
+          <div class="donut-center">
+            <div class="donut-center-val">${centerValue}</div>
+            <div class="donut-center-lbl">${centerLabel}</div>
+          </div>
+        </div>
+        <div class="donut-legend">${legendHTML}</div>
+      `;
+    }
+
+    // --- IndexedDB Handle Persistence ---
+    function openHandleDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open('hrms_handle_store', 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('handles');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveDirectoryHandle(handle) {
+      const idb = await openHandleDB();
+      const tx = idb.transaction('handles', 'readwrite');
+      tx.objectStore('handles').put(handle, 'hrms_root');
+    }
+
+    async function getSavedDirectoryHandle() {
+      const idb = await openHandleDB();
+      return new Promise((resolve) => {
+        const tx = idb.transaction('handles', 'readonly');
+        const req = tx.objectStore('handles').get('hrms_root');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      });
+    }
+
+    function updateStatusUI(status, isConnected = false) {
+      const badge = document.getElementById('folderStatus');
+      badge.textContent = status;
+      badge.className = isConnected ? 'status-badge status-connected' : 'status-badge';
+      badge.style.cursor = isConnected ? 'default' : 'pointer';
+      badge.onclick = isConnected ? null : () => connectFolder(true);
+    }
+
+    async function connectFolder(userInitiated = false) {
+      try {
+        if (!rootDirHandle) rootDirHandle = await getSavedDirectoryHandle();
+        if (!rootDirHandle) {
+          if (!userInitiated) { updateStatusUI('📁 Click to Select Folder', false); return false; }
+          rootDirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+          await saveDirectoryHandle(rootDirHandle);
+        }
+
+        let perm = await rootDirHandle.queryPermission({ mode: 'readwrite' });
+        if (perm !== 'granted') {
+          if (!userInitiated) { updateStatusUI('🔒 Click to Authorize Folder', false); return false; }
+          perm = await rootDirHandle.requestPermission({ mode: 'readwrite' });
+          if (perm !== 'granted') { updateStatusUI('❌ Permission Denied (Click to retry)', false); return false; }
+        }
+
+        updateStatusUI('Connected (file: /data)', true);
+        await loadData();
+        return true;
+      } catch (err) {
+        if (err.name !== 'AbortError') updateStatusUI('⚠️ Click to Connect', false);
+        return false;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const now = new Date();
+      const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const todayISO = now.toISOString().split('T')[0];
+
+      document.getElementById('payrollMonth').value = monthStr;
+      document.getElementById('matrixMonthInput').value = monthStr;
+      document.getElementById('attendDate').value = todayISO;
+      document.getElementById('loanDate').value = todayISO;
+      document.getElementById('expDate').value = todayISO;
+      document.getElementById('assetDate').value = todayISO;
+      document.getElementById('fnfExitDate').value = todayISO;
+
+      renderAll();
+
+      const connected = await connectFolder(false);
+      if (!connected) {
+        const onFirstClick = async () => {
+          if (rootDirHandle) {
+            const ok = await connectFolder(true);
+            if (ok) window.removeEventListener('click', onFirstClick);
+          }
+        };
+        window.addEventListener('click', onFirstClick);
+      }
+    });
+
+    async function loadData() {
+      if (!rootDirHandle) return;
+      try {
+        const fileHandle = await rootDirHandle.getFileHandle('data', { create: true });
+        const file = await fileHandle.getFile();
+        const text = await file.text();
+        if (text.trim()) {
+          const loaded = JSON.parse(text);
+          db = {
+            ...db,
+            ...loaded,
+            settings: { ...db.settings, ...(loaded.settings || {}) },
+            holidays: loaded.holidays || db.holidays,
+            shifts: loaded.shifts || db.shifts,
+            expenses: loaded.expenses || [],
+            loans: loaded.loans || [],
+            assets: loaded.assets || [],
+            payrollAdjustments: loaded.payrollAdjustments || {},
+            lockedRuns: loaded.lockedRuns || {}
+          };
+        } else {
+          await saveData();
+        }
+        applyTheme(db.theme || 'light');
+        renderAll();
+      } catch (e) { console.error('Load error:', e); }
+    }
+
+    async function saveData() {
+      if (!rootDirHandle) await connectFolder(true);
+      if (!rootDirHandle) return;
+      const fileHandle = await rootDirHandle.getFileHandle('data', { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(JSON.stringify(db, null, 2));
+      await writable.close();
+      renderAll();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      if (event && event.currentTarget && event.currentTarget.classList.contains('nav-item')) {
+        event.currentTarget.classList.add('active');
+      }
+
+      const headings = {
+        'dashboard': 'Executive HR & Payroll Summary',
+        'employee-list': 'Employees, Local Vault & HR Letters',
+        'attendance': 'Attendance Logger & Monthly Matrix',
+        'leave': 'Leave Management & Quota Balances',
+        'expenses': 'Expense Claims & Reimbursements',
+        'loans': 'Employee Loans & Salary Advances',
+        'assets': 'Company Asset & Hardware Inventory',
+        'payroll-engine': 'Payroll Processing & Statutory Returns',
+        'fnf-settlement': 'Resignation & Full and Final (FnF) Settlement',
+        'shifts-depts': 'Shifts, Departments & Holidays',
+        'settings': 'Company Settings, Quotas & Backup'
+      };
+      document.getElementById('pageHeading').textContent = headings[tabId] || 'HRMS';
+      if (tabId === 'dashboard') renderDashboardSummary();
+      if (tabId === 'payroll-engine') calculateMonthlyPayroll();
+      if (tabId === 'attendance') renderAttendanceMatrix();
+      if (tabId === 'fnf-settlement') calculateFnFPreview();
+    }
+
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      db.theme = next;
+      saveData();
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+    }
+
+    function renderAll() {
+      renderDashboardSummary();
+      renderSettings();
+      renderDepartments();
+      renderShifts();
+      renderHolidays();
+      renderEmployees();
+      renderAttendance();
+      renderAttendanceMatrix();
+      renderLeaves();
+      renderExpenses();
+      renderLoans();
+      renderAssets();
+    }
+
+    // --- 0. DASHBOARD SUMMARY ---
+    function renderDashboardSummary() {
+      const curr = db.settings.currency || '₹';
+      const totalStaff = db.employees.length;
+      const activeStaff = db.employees.filter(e => e.status !== 'Resigned').length;
+      document.getElementById('dashTotalStaff').textContent = activeStaff;
+      document.getElementById('dashActiveStaff').textContent = `${totalStaff} Total Registered`;
+
+      let estGross = 0, estNet = 0, estDeductions = 0, estEmployerShare = 0;
+      const deptSpending = {};
+      let males = 0, females = 0, others = 0;
+
+      db.employees.filter(e => e.status !== 'Resigned').forEach(emp => {
+        const basic = emp.basicSalary || 0;
+        const gross = emp.grossMonthly || basic;
+        estGross += gross;
+        const epf = Math.round(basic * (db.settings.epfRate / 100));
+        const esi = gross <= db.settings.esiLimit ? Math.round(gross * (db.settings.esiRate / 100)) : 0;
+        const ded = epf + esi + (db.settings.defaultPT || 0) + (emp.tds || 0);
+        estDeductions += ded;
+        estNet += Math.max(0, gross - ded);
+
+        const empEpf = Math.round(basic * (db.settings.employerEpfRate / 100));
+        const empEsi = gross <= db.settings.esiLimit ? Math.round(gross * (db.settings.employerEsiRate / 100)) : 0;
+        estEmployerShare += (empEpf + empEsi);
+
+        const dept = emp.department || 'Unassigned';
+        deptSpending[dept] = (deptSpending[dept] || 0) + gross;
+
+        if (emp.gender === 'Female') females++;
+        else if (emp.gender === 'Male') males++;
+        else others++;
+      });
+
+      const estTotalCTC = estGross + estEmployerShare;
+      document.getElementById('dashPayrollOutflow').textContent = `${curr}${estTotalCTC.toLocaleString()}`;
+      document.getElementById('dashPayrollEmpShare').textContent = `Gross: ${curr}${estGross.toLocaleString()} | Net: ${curr}${estNet.toLocaleString()}`;
+
+      const activeLoans = (db.loans || []).filter(l => l.balance > 0);
+      const totalLoanBal = activeLoans.reduce((sum, l) => sum + l.balance, 0);
+      const totalExp = (db.expenses || []).reduce((sum, x) => sum + x.amount, 0);
+      document.getElementById('dashActiveLoans').textContent = `${curr}${totalLoanBal.toLocaleString()}`;
+      document.getElementById('dashLoanSubtext').textContent = `${activeLoans.length} Active Loans | ${curr}${totalExp.toLocaleString()} Claims`;
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('dashTodayDateLabel').textContent = todayStr;
+      const todayLogs = db.attendance.filter(a => a.date === todayStr);
+      const presentCount = todayLogs.filter(a => a.status === 'Present').length;
+      const halfDayCount = todayLogs.filter(a => a.status === 'Half Day').length;
+      const absentCount = todayLogs.filter(a => a.status === 'Absent').length;
+      const onLeaveCount = todayLogs.filter(a => a.status === 'On Leave').length;
+      const unloggedCount = Math.max(0, activeStaff - todayLogs.length);
+
+      document.getElementById('dashTodayPresent').textContent = presentCount + halfDayCount;
+      document.getElementById('dashTodayStats').textContent = `${absentCount} Absent | ${onLeaveCount} On Leave`;
+
+      document.getElementById('donutPayrollBox').innerHTML = createDonutChartHTML([
+        { label: 'Net Take-Home', value: estNet, formatted: `${curr}${estNet.toLocaleString()}`, color: '#16a34a' },
+        { label: 'Emp. Deductions', value: estDeductions, formatted: `${curr}${estDeductions.toLocaleString()}`, color: '#dc2626' },
+        { label: 'Employer Share', value: estEmployerShare, formatted: `${curr}${estEmployerShare.toLocaleString()}`, color: '#0284c7' }
+      ], `${curr}${(estTotalCTC / 1000).toFixed(1)}k`, 'Total CTC');
+
+      const palette = ['#2563eb', '#7c3aed', '#db2777', '#0d9488', '#d97706', '#dc2626'];
+      const deptSegments = Object.keys(deptSpending).map((d, i) => ({
+        label: d, value: deptSpending[d], formatted: `${curr}${deptSpending[d].toLocaleString()}`, color: palette[i % palette.length]
+      }));
+      document.getElementById('donutDeptBox').innerHTML = createDonutChartHTML(
+        deptSegments.length ? deptSegments : [{ label: 'No Data', value: 0, formatted: `${curr}0`, color: '#94a3b8' }],
+        `${Object.keys(deptSpending).length}`, 'Depts'
+      );
+
+      document.getElementById('donutAttendanceBox').innerHTML = createDonutChartHTML([
+        { label: 'Present', value: presentCount, color: '#16a34a' },
+        { label: 'Half Day', value: halfDayCount, color: '#f59e0b' },
+        { label: 'On Leave', value: onLeaveCount, color: '#0284c7' },
+        { label: 'Absent', value: absentCount, color: '#dc2626' },
+        { label: 'Not Logged', value: unloggedCount, color: '#94a3b8' }
+      ], `${presentCount + halfDayCount}/${activeStaff}`, 'Present');
+
+      document.getElementById('donutGenderBox').innerHTML = createDonutChartHTML([
+        { label: 'Male', value: males, color: '#2563eb' },
+        { label: 'Female', value: females, color: '#db2777' },
+        { label: 'Other', value: others, color: '#7c3aed' }
+      ], `${activeStaff}`, 'Active');
+
+      const holList = document.getElementById('dashHolidayList');
+      holList.innerHTML = db.holidays.slice(0, 4).map(h => `<tr><td><strong>${h.date}</strong></td><td>${h.name}</td></tr>`).join('');
+
+      const bdayBox = document.getElementById('dashBirthdaysList');
+      const withDob = db.employees.filter(e => e.dob).slice(0, 3);
+      bdayBox.innerHTML = withDob.length
+        ? withDob.map(e => `<div>🎉 <strong>${e.name}</strong> (${e.department}) — DOB: ${e.dob}</div>`).join('')
+        : '<span style="color:var(--text-muted);">Add employees to view birthdays & milestones.</span>';
+    }
+
+    // --- 1. SETTINGS ---
+    function renderSettings() {
+      const s = db.settings;
+      document.getElementById('settingCompName').value = s.companyName || '';
+      document.getElementById('settingCompBranches').value = s.branches || '';
+      document.getElementById('settingCompReg').value = s.registrationNo || '';
+      document.getElementById('settingCompTax').value = s.taxId || '';
+      document.getElementById('settingCompEmail').value = s.email || '';
+      document.getElementById('settingCompPhone').value = s.phone || '';
+      document.getElementById('settingCompAddress').value = s.address || '';
+      document.getElementById('settingEpfRate').value = s.epfRate ?? 12;
+      document.getElementById('settingEmployerEpfRate').value = s.employerEpfRate ?? 12;
+      document.getElementById('settingEsiRate').value = s.esiRate ?? 0.75;
+      document.getElementById('settingEmployerEsiRate').value = s.employerEsiRate ?? 3.25;
+      document.getElementById('settingEsiLimit').value = s.esiLimit ?? 21000;
+      document.getElementById('settingDefaultPT').value = s.defaultPT ?? 200;
+      document.getElementById('settingOtMultiplier').value = s.otMultiplier ?? 1.5;
+      document.getElementById('settingQuotaCL').value = s.quotaCL ?? 12;
+      document.getElementById('settingQuotaSL').value = s.quotaSL ?? 10;
+      document.getElementById('settingQuotaEL').value = s.quotaEL ?? 15;
+      document.getElementById('settingCurrency').value = s.currency || '₹';
+
+      document.getElementById('brandName').textContent = s.companyName || 'Local HRMS';
+      if (s.logo) {
+        document.getElementById('sidebarLogo').src = s.logo;
+        document.getElementById('sidebarLogo').style.display = 'block';
+        document.getElementById('logoPreview').src = s.logo;
+        document.getElementById('logoPreview').style.display = 'block';
+      }
+    }
+
+    document.getElementById('settingLogoInput').onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        db.settings.logo = evt.target.result;
+        document.getElementById('logoPreview').src = evt.target.result;
+        document.getElementById('logoPreview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    };
+
+    document.getElementById('settingsCompanyForm').onsubmit = async (e) => {
+      e.preventDefault();
+      db.settings = {
+        ...db.settings,
+        companyName: document.getElementById('settingCompName').value.trim(),
+        branches: document.getElementById('settingCompBranches').value.trim(),
+        registrationNo: document.getElementById('settingCompReg').value.trim(),
+        taxId: document.getElementById('settingCompTax').value.trim(),
+        email: document.getElementById('settingCompEmail').value.trim(),
+        phone: document.getElementById('settingCompPhone').value.trim(),
+        address: document.getElementById('settingCompAddress').value.trim(),
+        epfRate: Number(document.getElementById('settingEpfRate').value),
+        employerEpfRate: Number(document.getElementById('settingEmployerEpfRate').value),
+        esiRate: Number(document.getElementById('settingEsiRate').value),
+        employerEsiRate: Number(document.getElementById('settingEmployerEsiRate').value),
+        esiLimit: Number(document.getElementById('settingEsiLimit').value),
+        defaultPT: Number(document.getElementById('settingDefaultPT').value),
+        otMultiplier: Number(document.getElementById('settingOtMultiplier').value),
+        quotaCL: Number(document.getElementById('settingQuotaCL').value),
+        quotaSL: Number(document.getElementById('settingQuotaSL').value),
+        quotaEL: Number(document.getElementById('settingQuotaEL').value),
+        currency: document.getElementById('settingCurrency').value.trim() || '₹'
+      };
+      await saveData();
+      alert('Settings saved!');
+    };
+
+    function downloadBackup() {
+      const timestamp = new Date().toISOString().split('T')[0];
+      downloadFile(JSON.stringify(db, null, 2), `hrms_backup_${timestamp}.json`, 'application/json');
+    }
+
+    async function restoreBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (!confirm(`Restore from "${file.name}"?`)) { event.target.value = ''; return; }
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed.employees || !parsed.settings) throw new Error('Invalid backup file.');
+          db = parsed;
+          await saveData();
+          alert('Restored successfully!');
+        } catch (err) { alert('Error: ' + err.message); }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    async function factoryResetDatabase() {
+      if (prompt('Type "RESET" to wipe all data:') !== 'RESET') return;
+      db.employees = []; db.attendance = []; db.leaves = []; db.expenses = []; db.loans = []; db.assets = []; db.payrollAdjustments = {}; db.lockedRuns = {};
+      await saveData();
+    }
+
+    // --- 2. DEPARTMENTS, SHIFTS & HOLIDAYS ---
+    function renderDepartments() {
+      const tbody = document.getElementById('deptTableBody');
+      const modalDept = document.getElementById('mDept');
+      const filterDept = document.getElementById('filterDept');
+      tbody.innerHTML = '';
+      modalDept.innerHTML = '<option value="" disabled selected>Select Department</option>';
+      filterDept.innerHTML = '<option value="">All Departments</option>';
+
+      db.departments.forEach((d, idx) => {
+        tbody.innerHTML += `<tr><td>${d}</td><td><button class="btn-danger" onclick="deleteDept(${idx})">Delete</button></td></tr>`;
+        modalDept.innerHTML += `<option value="${d}">${d}</option>`;
+        filterDept.innerHTML += `<option value="${d}">${d}</option>`;
+      });
+    }
+
+    document.getElementById('addDeptBtn').onclick = async () => {
+      const val = document.getElementById('deptInput').value.trim();
+      if (!val || db.departments.includes(val)) return;
+      db.departments.push(val);
+      document.getElementById('deptInput').value = '';
+      await saveData();
+    };
+
+    window.deleteDept = async (idx) => { db.departments.splice(idx, 1); await saveData(); };
+
+    function renderShifts() {
+      const tbody = document.getElementById('shiftTableBody');
+      const mShift = document.getElementById('mShift');
+      const overrideShift = document.getElementById('attendOverrideShiftSelect');
+      tbody.innerHTML = ''; mShift.innerHTML = ''; overrideShift.innerHTML = '';
+
+      db.shifts.forEach((s, idx) => {
+        tbody.innerHTML += `<tr><td><strong>${s.name}</strong></td><td>${s.start} - ${s.end}</td><td><button class="btn-danger" onclick="deleteShift(${idx})">Delete</button></td></tr>`;
+        const opt = `<option value="${s.name}">${s.name} (${s.start} - ${s.end})</option>`;
+        mShift.innerHTML += opt; overrideShift.innerHTML += opt;
+      });
+    }
+
+    document.getElementById('shiftForm').onsubmit = async (e) => {
+      e.preventDefault();
+      db.shifts.push({ id: Date.now(), name: document.getElementById('shiftName').value.trim(), start: document.getElementById('shiftStart').value, end: document.getElementById('shiftEnd').value });
+      document.getElementById('shiftForm').reset();
+      await saveData();
+    };
+
+    window.deleteShift = async (idx) => { db.shifts.splice(idx, 1); await saveData(); };
+
+    function renderHolidays() {
+      const tbody = document.getElementById('holidayTableBody');
+      tbody.innerHTML = db.holidays.map((h, idx) => `<tr><td>${h.date}</td><td><strong>${h.name}</strong></td><td><button class="btn-danger" onclick="deleteHoliday(${idx})">Delete</button></td></tr>`).join('');
+    }
+
+    document.getElementById('holidayForm').onsubmit = async (e) => {
+      e.preventDefault();
+      db.holidays.push({ date: document.getElementById('holidayDate').value, name: document.getElementById('holidayName').value.trim() });
+      document.getElementById('holidayForm').reset();
+      await saveData();
+    };
+
+    window.deleteHoliday = async (idx) => { db.holidays.splice(idx, 1); await saveData(); };
+
+    // --- 3. EMPLOYEES, DOCUMENT VAULT & HR LETTERS ---
+    function calculateAge() {
+      const dobVal = document.getElementById('mDob').value;
+      if (!dobVal) return;
+      const age = new Date(Date.now() - new Date(dobVal).getTime()).getUTCFullYear() - 1970;
+      document.getElementById('mAge').value = age >= 0 ? age : 0;
+    }
+
+    function recalcSalaryStructure() {
+      const basic = Number(document.getElementById('mBasicSalary').value) || 0;
+      if (!document.getElementById('mHra').value || Number(document.getElementById('mHra').value) === 0) {
+        document.getElementById('mHra').value = Math.round(basic * 0.4);
+      }
+    }
+
+    function openEmployeeModal(empId = null) {
+      document.getElementById('fullEmpForm').reset();
+      document.getElementById('editEmpId').value = '';
+      document.getElementById('modalTitle').textContent = 'Add New Employee';
+
+      if (empId) {
+        const emp = db.employees.find(e => e.id === empId);
+        if (emp) {
+          document.getElementById('modalTitle').textContent = `Edit Profile: ${emp.name}`;
+          document.getElementById('editEmpId').value = emp.id;
+          document.getElementById('mName').value = emp.name || '';
+          document.getElementById('mGender').value = emp.gender || 'Male';
+          document.getElementById('mDob').value = emp.dob || '';
+          document.getElementById('mAge').value = emp.age || '';
+          document.getElementById('mBlood').value = emp.blood || '';
+          document.getElementById('mEmail').value = emp.email || '';
+          document.getElementById('mPhone').value = emp.phone || '';
+          document.getElementById('mEmergency').value = emp.emergency || '';
+          document.getElementById('mDept').value = emp.department || '';
+          document.getElementById('mRole').value = emp.role || '';
+          document.getElementById('mStatus').value = emp.status || 'Active';
+          document.getElementById('mType').value = emp.type || 'Full-Time';
+          document.getElementById('mShift').value = emp.shift || '';
+          document.getElementById('mJoinDate').value = emp.joinDate || '';
+          document.getElementById('mEducation').value = emp.education || '';
+          document.getElementById('mExp').value = emp.experience || 0;
+          document.getElementById('mAddress').value = emp.address || '';
+          document.getElementById('mBasicSalary').value = emp.basicSalary || '';
+          document.getElementById('mHra').value = emp.hra || 0;
+          document.getElementById('mConveyance').value = emp.conveyance || 0;
+          document.getElementById('mSpecialAllowance').value = emp.specialAllowance || 0;
+          document.getElementById('mTds').value = emp.tds || 0;
+          document.getElementById('mBankAcc').value = emp.bankAcc || '';
+          document.getElementById('mBankIfsc').value = emp.bankIfsc || '';
+          document.getElementById('mBankName').value = emp.bankName || '';
+          document.getElementById('mPan').value = emp.pan || '';
+          document.getElementById('mUan').value = emp.uan || '';
+          document.getElementById('mEsic').value = emp.esic || '';
+        }
+      }
+      document.getElementById('employeeModal').style.display = 'flex';
+    }
+
+    function closeEmployeeModal() { document.getElementById('employeeModal').style.display = 'none'; }
+
+    document.getElementById('fullEmpForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const editId = document.getElementById('editEmpId').value;
+      const basic = Number(document.getElementById('mBasicSalary').value);
+      const hra = Number(document.getElementById('mHra').value) || 0;
+      const conv = Number(document.getElementById('mConveyance').value) || 0;
+      const spec = Number(document.getElementById('mSpecialAllowance').value) || 0;
+
+      const empData = {
+        name: document.getElementById('mName').value.trim(),
+        gender: document.getElementById('mGender').value,
+        dob: document.getElementById('mDob').value,
+        age: document.getElementById('mAge').value,
+        blood: document.getElementById('mBlood').value.trim(),
+        email: document.getElementById('mEmail').value.trim(),
+        phone: document.getElementById('mPhone').value.trim(),
+        emergency: document.getElementById('mEmergency').value.trim(),
+        department: document.getElementById('mDept').value,
+        role: document.getElementById('mRole').value.trim(),
+        status: document.getElementById('mStatus').value,
+        type: document.getElementById('mType').value,
+        shift: document.getElementById('mShift').value,
+        joinDate: document.getElementById('mJoinDate').value,
+        education: document.getElementById('mEducation').value.trim(),
+        experience: Number(document.getElementById('mExp').value) || 0,
+        address: document.getElementById('mAddress').value.trim(),
+        basicSalary: basic, hra, conveyance: conv, specialAllowance: spec,
+        grossMonthly: basic + hra + conv + spec,
+        tds: Number(document.getElementById('mTds').value) || 0,
+        bankAcc: document.getElementById('mBankAcc').value.trim(),
+        bankIfsc: document.getElementById('mBankIfsc').value.trim(),
+        bankName: document.getElementById('mBankName').value.trim(),
+        pan: document.getElementById('mPan').value.trim(),
+        uan: document.getElementById('mUan').value.trim(),
+        esic: document.getElementById('mEsic').value.trim()
+      };
+
+      if (editId) {
+        const idx = db.employees.findIndex(e => e.id == editId);
+        if (idx !== -1) db.employees[idx] = { ...db.employees[idx], ...empData };
+      } else {
+        const newId = db.employees.length > 0 ? Math.max(...db.employees.map(e => e.id)) + 1 : 101;
+        db.employees.push({ id: newId, ...empData });
+      }
+      await saveData();
+      closeEmployeeModal();
+    };
+
+    function renderEmployees() {
+      const tbody = document.getElementById('empTableBody');
+      const selects = ['attendEmpSelect', 'leaveEmpSelect', 'loanEmpSelect', 'expEmpSelect', 'assetEmpSelect', 'fnfEmpSelect'];
+      const curr = db.settings.currency || '₹';
+
+      tbody.innerHTML = '';
+      selects.forEach(sId => {
+        const el = document.getElementById(sId);
+        if (el) el.innerHTML = '<option value="" disabled selected>Select Employee</option>';
+      });
+
+      db.employees.forEach(emp => {
+        const statusColor = emp.status === 'Resigned' ? 'background:#fee2e2; color:#991b1b;' : 'background:#dcfce7; color:#166534;';
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>#${emp.id}</strong></td>
+            <td>${emp.name} <br><span style="font-size:11px; color:var(--text-muted);">${emp.phone || ''}</span></td>
+            <td>${emp.department}</td>
+            <td>${emp.role}</td>
+            <td><span class="run-badge" style="${statusColor}">${emp.status || 'Active'}</span></td>
+            <td>${curr}${Number(emp.grossMonthly || emp.basicSalary || 0).toLocaleString()}</td>
+            <td>
+              <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                <button class="btn-outline" style="padding:4px 7px; font-size:11px;" onclick="openDocVaultModal(${emp.id})">📂 Docs</button>
+                <button class="btn-outline" style="padding:4px 7px; font-size:11px;" onclick="openHrLettersModal(${emp.id})">🪪 Letters/ID</button>
+                <button class="btn-outline" style="padding:4px 7px; font-size:11px;" onclick="openEmployeeModal(${emp.id})">Edit</button>
+                <button class="btn-danger" onclick="deleteEmployee(${emp.id})">✕</button>
+              </div>
+            </td>
+          </tr>`;
+
+        const opt = `<option value="${emp.id}">${emp.name} (#${emp.id})</option>`;
+        selects.forEach(sId => {
+          const el = document.getElementById(sId);
+          if (el) el.innerHTML += opt;
+        });
+      });
+    }
+
+    // --- LOCAL DOCUMENT VAULT (/documents/EMP_ID/) ---
+    async function openDocVaultModal(empId) {
+      if (!rootDirHandle) await connectFolder(true);
+      if (!rootDirHandle) return;
+      const emp = db.employees.find(e => e.id === empId);
+      document.getElementById('docVaultEmpId').value = empId;
+      document.getElementById('docVaultTitle').textContent = `📂 Local Document Vault: ${emp.name} (#${empId})`;
+      document.getElementById('docVaultModal').style.display = 'flex';
+      await listEmployeeVaultFiles(empId);
+    }
+
+    function closeDocVaultModal() { document.getElementById('docVaultModal').style.display = 'none'; }
+
+    async function listEmployeeVaultFiles(empId) {
+      const tbody = document.getElementById('docVaultTableBody');
+      tbody.innerHTML = '';
+      try {
+        const docsDir = await rootDirHandle.getDirectoryHandle('documents', { create: true });
+        const empDir = await docsDir.getDirectoryHandle(`EMP_${empId}`, { create: true });
+        let count = 0;
+        for await (const [name, handle] of empDir.entries()) {
+          if (handle.kind === 'file') {
+            count++;
+            const file = await handle.getFile();
+            const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
+            tbody.innerHTML += `
+              <tr>
+                <td><strong>${name}</strong></td>
+                <td>${sizeKB}</td>
+                <td>
+                  <button class="btn-outline" style="padding:3px 8px; font-size:11px;" onclick="openVaultFile(${empId}, '${name}')">👁️ Open</button>
+                  <button class="btn-danger" onclick="deleteVaultFile(${empId}, '${name}')">Delete</button>
+                </td>
+              </tr>`;
+          }
+        }
+        if (count === 0) tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No documents stored yet</td></tr>';
+      } catch (err) { console.error(err); }
+    }
+
+    async function uploadFileToLocalVault() {
+      const empId = document.getElementById('docVaultEmpId').value;
+      const fileInput = document.getElementById('vaultFileInput');
+      const file = fileInput.files[0];
+      if (!file) return alert('Select a file first!');
+
+      const docsDir = await rootDirHandle.getDirectoryHandle('documents', { create: true });
+      const empDir = await docsDir.getDirectoryHandle(`EMP_${empId}`, { create: true });
+      const fileHandle = await empDir.getFileHandle(file.name, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(file);
+      await writable.close();
+
+      fileInput.value = '';
+      await listEmployeeVaultFiles(empId);
+    }
+
+    window.openVaultFile = async (empId, fileName) => {
+      const docsDir = await rootDirHandle.getDirectoryHandle('documents');
+      const empDir = await docsDir.getDirectoryHandle(`EMP_${empId}`);
+      const fileHandle = await empDir.getFileHandle(fileName);
+      const file = await fileHandle.getFile();
+      const url = URL.createObjectURL(file);
+      window.open(url, '_blank');
+    };
+
+    window.deleteVaultFile = async (empId, fileName) => {
+      if (!confirm(`Delete ${fileName}?`)) return;
+      const docsDir = await rootDirHandle.getDirectoryHandle('documents');
+      const empDir = await docsDir.getDirectoryHandle(`EMP_${empId}`);
+      await empDir.removeEntry(fileName);
+      await listEmployeeVaultFiles(empId);
+    };
+
+    // --- HR LETTERS & PRINTABLE ID CARD GENERATOR ---
+    function openHrLettersModal(empId) {
+      activeLetterEmpId = empId;
+      document.getElementById('letterSelectorBar').style.display = 'flex';
+      renderHrDocument('offer');
+      document.getElementById('payslipModal').style.display = 'flex';
+    }
+
+    function renderHrDocument(type) {
+      const emp = db.employees.find(e => e.id === activeLetterEmpId);
+      if (!emp) return;
+      const s = db.settings;
+      const curr = s.currency || '₹';
+      const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+      const area = document.getElementById('payslipPrintArea');
+
+      const headerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #0f172a; padding-bottom:12px; margin-bottom:20px;">
+          <div>
+            <h2 style="margin:0; font-size:20px;">${s.companyName}</h2>
+            <div style="font-size:12px; color:#475569;">${s.address}</div>
+            <div style="font-size:11px; color:#475569;">${s.registrationNo} | ${s.email} | ${s.phone}</div>
+          </div>
+          ${s.logo ? `<img src="${s.logo}" style="max-height:50px;">` : ''}
+        </div>`;
+
+      if (type === 'offer') {
+        area.innerHTML = `
+          ${headerHTML}
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:20px;">
+            <div><strong>Ref:</strong> HR/OFFER/${emp.id}/${new Date().getFullYear()}</div>
+            <div><strong>Date:</strong> ${today}</div>
+          </div>
+          <p>To,<br><strong>${emp.name}</strong><br>${emp.address || ''}<br>Phone: ${emp.phone}</p>
+          <h3 style="text-align:center; text-decoration:underline; margin:24px 0;">SUBJECT: OFFER OF APPOINTMENT</h3>
+          <p style="line-height:1.6; font-size:13.5px;">Dear <strong>${emp.name}</strong>,</p>
+          <p style="line-height:1.6; font-size:13.5px;">
+            We are pleased to offer you the position of <strong>${emp.role}</strong> in the <strong>${emp.department}</strong> department at <strong>${s.companyName}</strong>, effective from your joining date of <strong>${emp.joinDate || today}</strong>.
+          </p>
+          <p style="line-height:1.6; font-size:13.5px;">
+            Your monthly gross remuneration will be <strong>${curr}${Number(emp.grossMonthly).toLocaleString()}</strong> (Basic: ${curr}${Number(emp.basicSalary).toLocaleString()}, HRA: ${curr}${Number(emp.hra).toLocaleString()}, Allowances: ${curr}${Number(emp.conveyance + emp.specialAllowance).toLocaleString()}), subject to applicable statutory deductions (EPF, ESI, PT, TDS).
+          </p>
+          <p style="line-height:1.6; font-size:13.5px;">
+            Your default working shift is <strong>${emp.shift || 'General Day'}</strong>. Please sign and return a duplicate copy of this letter as a token of your acceptance.
+          </p>
+          <div style="margin-top:55px; display:flex; justify-content:space-between; font-size:13px;">
+            <div>_______________________<br><strong>Authorized Signatory</strong><br>${s.companyName}</div>
+            <div>_______________________<br><strong>Candidate Acceptance</strong><br>${emp.name}</div>
+          </div>`;
+      } else if (type === 'experience') {
+        area.innerHTML = `
+          ${headerHTML}
+          <div style="text-align:right; font-size:13px; margin-bottom:25px;"><strong>Date:</strong> ${today}</div>
+          <h3 style="text-align:center; text-decoration:underline; margin:24px 0;">TO WHOMSOEVER IT MAY CONCERN</h3>
+          <p style="line-height:1.8; font-size:14px; margin-top:24px;">
+            This is to certify that <strong>${emp.name}</strong> (Employee ID: <strong>#${emp.id}</strong>) was employed with <strong>${s.companyName}</strong> as <strong>${emp.role}</strong> in the <strong>${emp.department}</strong> department from <strong>${emp.joinDate || 'N/A'}</strong> to <strong>${today}</strong>.
+          </p>
+          <p style="line-height:1.8; font-size:14px;">
+            During their tenure with us, we found them to be sincere, hardworking, and dedicated to their duties. They have completed all handover formalities and are relieved from their duties at the close of business today.
+          </p>
+          <p style="line-height:1.8; font-size:14px;">We wish them all the best in their future endeavors.</p>
+          <div style="margin-top:65px; font-size:13px;">
+            _______________________<br><strong>HR Manager / Authorized Signatory</strong><br>${s.companyName}
+          </div>`;
+      } else if (type === 'increment') {
+        area.innerHTML = `
+          ${headerHTML}
+          <div style="text-align:right; font-size:13px; margin-bottom:20px;"><strong>Date:</strong> ${today}</div>
+          <p>To,<br><strong>${emp.name} (#${emp.id})</strong><br>Designation: ${emp.role} (${emp.department})</p>
+          <h3 style="text-align:center; text-decoration:underline; margin:24px 0;">LETTER OF SALARY REVISION & APPRAISAL</h3>
+          <p style="line-height:1.7; font-size:14px;">Dear <strong>${emp.name}</strong>,</p>
+          <p style="line-height:1.7; font-size:14px;">
+            In recognition of your performance and contribution to <strong>${s.companyName}</strong>, management is pleased to revise your monthly compensation package to <strong>${curr}${Number(emp.grossMonthly).toLocaleString()}</strong> per month.
+          </p>
+          <p style="line-height:1.7; font-size:14px;">All other terms and conditions of your employment remain unchanged. Keep up the great work!</p>
+          <div style="margin-top:60px; font-size:13px;">
+            _______________________<br><strong>Authorized Signatory</strong><br>${s.companyName}
+          </div>`;
+      } else if (type === 'idcard') {
+        area.innerHTML = `
+          <div style="width:320px; margin:20px auto; border:2px solid #0f172a; border-radius:12px; overflow:hidden; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+            <div style="background:#0f172a; color:#fff; padding:14px;">
+              <div style="font-weight:800; font-size:16px;">${s.companyName}</div>
+              <div style="font-size:10px; color:#94a3b8;">IDENTITY CARD</div>
+            </div>
+            <div style="padding:20px;">
+              <div style="width:76px; height:76px; border-radius:50%; background:#e2e8f0; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:bold; color:#1e293b;">
+                ${emp.name.charAt(0)}
+              </div>
+              <h3 style="margin:0 0 4px 0; font-size:18px;">${emp.name}</h3>
+              <div style="font-size:13px; color:#2563eb; font-weight:700; margin-bottom:14px;">${emp.role}</div>
+              <div style="text-align:left; font-size:12px; line-height:1.7; border-top:1px solid #e2e8f0; padding-top:10px;">
+                <div><strong>Emp ID:</strong> #${emp.id}</div>
+                <div><strong>Department:</strong> ${emp.department}</div>
+                <div><strong>Blood Group:</strong> ${emp.blood || 'N/A'}</div>
+                <div><strong>Date of Joining:</strong> ${emp.joinDate || 'N/A'}</div>
+                <div><strong>Phone:</strong> ${emp.phone}</div>
+                <div><strong>Emergency:</strong> ${emp.emergency || 'N/A'}</div>
+              </div>
+            </div>
+            <div style="background:#f1f5f9; padding:8px; font-size:10px; color:#475569; border-top:1px solid #cbd5e1;">
+              ${s.address} | ${s.phone}
+            </div>
+          </div>`;
+      }
+    }
+
+    function exportEmployeeCSV() {
+      if (!db.employees.length) return alert('No employees to export!');
+      let csv = "ID,Name,Gender,DOB,Phone,Email,Department,Designation,Status,Type,Shift,JoinDate,Basic,HRA,Conveyance,Special,GrossMonthly,BankAcc,IFSC,BankName,PAN,UAN,ESIC\n";
+      db.employees.forEach(e => {
+        csv += `"${e.id}","${e.name}","${e.gender}","${e.dob}","${e.phone}","${e.email}","${e.department}","${e.role}","${e.status || 'Active'}","${e.type}","${e.shift || ''}","${e.joinDate}",${e.basicSalary || 0},${e.hra || 0},${e.conveyance || 0},${e.specialAllowance || 0},${e.grossMonthly || 0},"${e.bankAcc || ''}","${e.bankIfsc || ''}","${e.bankName || ''}","${e.pan || ''}","${e.uan || ''}","${e.esic || ''}"\n`;
+      });
+      downloadFile(csv, `Employee_Directory_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+    }
+
+    window.deleteEmployee = async (id) => {
+      if (!confirm(`Delete employee #${id}?`)) return;
+      db.employees = db.employees.filter(e => e.id !== id);
+      await saveData();
+    };
+
+    // --- 4. ATTENDANCE, BULK PRESENT & MONTHLY MATRIX ---
+    function toggleShiftOverrideInput() {
+      document.getElementById('overrideShiftBox').style.display = document.getElementById('attendOverrideCheck').checked ? 'block' : 'none';
+    }
+
+    function syncEmployeeDefaultShift() {
+      const empId = Number(document.getElementById('attendEmpSelect').value);
+      const emp = db.employees.find(e => e.id === empId);
+      if (emp && emp.shift) document.getElementById('attendOverrideShiftSelect').value = emp.shift;
+    }
+
+    async function markAllPresentToday() {
+      const dateVal = document.getElementById('attendDate').value;
+      if (!dateVal) return alert('Select a date first!');
+      const activeEmps = db.employees.filter(e => e.status !== 'Resigned');
+      if (!activeEmps.length) return alert('No active employees found!');
+
+      activeEmps.forEach(emp => {
+        const exists = db.attendance.some(a => a.date === dateVal && a.empId === emp.id);
+        if (!exists) {
+          db.attendance.push({
+            date: dateVal, empId: emp.id, status: 'Present',
+            shift: emp.shift || 'General Day', isShiftOverride: false, overrideReason: '',
+            inTime: '09:00', outTime: '18:00', hours: 9
+          });
+        }
+      });
+      await saveData();
+      alert(`Marked all active staff Present for ${dateVal}!`);
+    }
+
+    function renderAttendanceMatrix() {
+      const monthStr = document.getElementById('matrixMonthInput').value;
+      const box = document.getElementById('attendanceMatrixBox');
+      if (!monthStr || !box) return;
+
+      const [yr, mo] = monthStr.split('-').map(Number);
+      const daysInMonth = new Date(yr, mo, 0).getDate();
+
+      let html = `<table class="matrix-table"><thead><tr><th style="text-align:left; min-width:140px;">Employee</th>`;
+      for (let d = 1; d <= daysInMonth; d++) html += `<th>${d}</th>`;
+      html += `<th>P</th><th>A</th></tr></thead><tbody>`;
+
+      db.employees.forEach(emp => {
+        let pCount = 0, aCount = 0;
+        html += `<tr><td style="text-align:left; font-weight:600;">${emp.name}</td>`;
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateStr = `${monthStr}-${String(d).padStart(2, '0')}`;
+          const rec = db.attendance.find(a => a.empId === emp.id && a.date === dateStr);
+          let code = '-', cls = '';
+          if (rec) {
+            if (rec.status === 'Present') { code = 'P'; cls = 'cell-P'; pCount++; }
+            else if (rec.status === 'Absent') { code = 'A'; cls = 'cell-A'; aCount++; }
+            else if (rec.status === 'Half Day') { code = 'HD'; cls = 'cell-HD'; pCount += 0.5; }
+            else if (rec.status === 'On Leave') { code = 'L'; cls = 'cell-L'; }
+          }
+          html += `<td class="${cls}">${code}</td>`;
+        }
+        html += `<td><strong>${pCount}</strong></td><td style="color:var(--danger);"><strong>${aCount}</strong></td></tr>`;
+      });
+      html += `</tbody></table>`;
+      box.innerHTML = html;
+    }
+
+    function renderAttendance() {
+      const tbody = document.getElementById('attendanceTableBody');
+      tbody.innerHTML = '';
+      db.attendance.slice(-30).reverse().forEach((att, idx) => {
+        const emp = db.employees.find(e => e.id == att.empId);
+        const shiftDisplay = att.isShiftOverride
+          ? `<span>${att.shift}</span> <span class="tag-override" title="${att.overrideReason || ''}">Temp Shift</span>`
+          : `<span>${att.shift || 'Default'}</span>`;
+        tbody.innerHTML += `
+          <tr>
+            <td>${att.date}</td><td>${emp ? emp.name : 'Unknown'}</td><td>${shiftDisplay}</td>
+            <td><strong>${att.status}</strong></td><td>${att.inTime || '--:--'}</td><td>${att.outTime || '--:--'}</td>
+            <td>${att.hours || '-'} hrs</td>
+            <td><button class="btn-danger" onclick="deleteAttendance(${db.attendance.length - 1 - idx})">Delete</button></td>
+          </tr>`;
+      });
+    }
+
+    document.getElementById('attendanceForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const empId = Number(document.getElementById('attendEmpSelect').value);
+      const emp = db.employees.find(x => x.id === empId);
+      const isOverride = document.getElementById('attendOverrideCheck').checked;
+      const effectiveShift = isOverride ? document.getElementById('attendOverrideShiftSelect').value : (emp ? emp.shift : 'General Day');
+      const inVal = document.getElementById('attendIn').value;
+      const outVal = document.getElementById('attendOut').value;
+      let calculatedHours = 0;
+      if (inVal && outVal) {
+        calculatedHours = ((new Date(`1970-01-01T${outVal}:00`) - new Date(`1970-01-01T${inVal}:00`)) / (1000 * 60 * 60)).toFixed(1);
+      }
+
+      db.attendance.push({
+        date: document.getElementById('attendDate').value, empId,
+        status: document.getElementById('attendStatus').value, shift: effectiveShift,
+        isShiftOverride: isOverride, overrideReason: isOverride ? document.getElementById('attendOverrideReason').value.trim() : '',
+        inTime: inVal, outTime: outVal, hours: calculatedHours > 0 ? calculatedHours : 0
+      });
+      document.getElementById('attendOverrideCheck').checked = false;
+      toggleShiftOverrideInput();
+      await saveData();
+    };
+
+    window.deleteAttendance = async (idx) => { db.attendance.splice(idx, 1); await saveData(); };
+
+    // --- 5. LEAVES & QUOTA BALANCES ---
+    function getLeaveDaysCount(fromStr, toStr) {
+      const d1 = new Date(fromStr), d2 = new Date(toStr);
+      const days = Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+      return days > 0 ? days : 1;
+    }
+
+    function renderLeaves() {
+      const tbody = document.getElementById('leaveTableBody');
+      const quotaBody = document.getElementById('leaveQuotaTableBody');
+      tbody.innerHTML = ''; quotaBody.innerHTML = '';
+
+      const qCL = db.settings.quotaCL ?? 12;
+      const qSL = db.settings.quotaSL ?? 10;
+      const qEL = db.settings.quotaEL ?? 15;
+
+      db.employees.forEach(emp => {
+        let usedCL = 0, usedSL = 0, usedEL = 0, usedLOP = 0;
+        db.leaves.filter(l => l.empId === emp.id).forEach(l => {
+          const days = getLeaveDaysCount(l.from, l.to);
+          if (l.type === 'Casual Leave') usedCL += days;
+          else if (l.type === 'Sick Leave') usedSL += days;
+          else if (l.type === 'Earned Leave') usedEL += days;
+          else if (l.type === 'Loss of Pay') usedLOP += days;
+        });
+
+        quotaBody.innerHTML += `
+          <tr>
+            <td><strong>${emp.name}</strong> (#${emp.id})</td>
+            <td>${usedCL} / ${qCL} <span style="color:var(--text-muted);">(${Math.max(0, qCL - usedCL)} left)</span></td>
+            <td>${usedSL} / ${qSL} <span style="color:var(--text-muted);">(${Math.max(0, qSL - usedSL)} left)</span></td>
+            <td>${usedEL} / ${qEL} <span style="color:var(--text-muted);">(${Math.max(0, qEL - usedEL)} left)</span></td>
+            <td><strong style="color:var(--danger);">${usedLOP} days</strong></td>
+          </tr>`;
+      });
+
+      db.leaves.forEach((l, idx) => {
+        const emp = db.employees.find(e => e.id == l.empId);
+        const days = getLeaveDaysCount(l.from, l.to);
+        tbody.innerHTML += `
+          <tr>
+            <td>${emp ? emp.name : 'Unknown'}</td><td>${l.type}</td><td>${l.from} to ${l.to}</td>
+            <td><strong>${days}d</strong></td><td>${l.reason || 'None'}</td>
+            <td><button class="btn-danger" onclick="deleteLeave(${idx})">Cancel</button></td>
+          </tr>`;
+      });
+    }
+
+    document.getElementById('leaveForm').onsubmit = async (e) => {
+      e.preventDefault();
+      db.leaves.push({
+        empId: Number(document.getElementById('leaveEmpSelect').value),
+        type: document.getElementById('leaveType').value,
+        from: document.getElementById('leaveFrom').value,
+        to: document.getElementById('leaveTo').value,
+        reason: document.getElementById('leaveReason').value.trim()
+      });
+      await saveData();
+      document.getElementById('leaveForm').reset();
+    };
+
+    window.deleteLeave = async (idx) => { db.leaves.splice(idx, 1); await saveData(); };
+
+    // --- 6. EXPENSE CLAIMS & REIMBURSEMENTS ---
+    function renderExpenses() {
+      const tbody = document.getElementById('expenseTableBody');
+      const curr = db.settings.currency || '₹';
+      tbody.innerHTML = (db.expenses || []).map((x, idx) => {
+        const emp = db.employees.find(e => e.id == x.empId);
+        return `<tr><td>${x.date}</td><td><strong>${emp ? emp.name : 'Unknown'}</strong></td><td>${x.category}</td><td><strong>${curr}${Number(x.amount).toLocaleString()}</strong></td><td>${x.notes || ''}</td><td><button class="btn-danger" onclick="deleteExpense(${idx})">Delete</button></td></tr>`;
+      }).join('');
+    }
+
+    document.getElementById('expenseForm').onsubmit = async (e) => {
+      e.preventDefault();
+      if (!db.expenses) db.expenses = [];
+      db.expenses.push({
+        id: Date.now(),
+        empId: Number(document.getElementById('expEmpSelect').value),
+        date: document.getElementById('expDate').value,
+        category: document.getElementById('expCategory').value,
+        amount: Number(document.getElementById('expAmount').value),
+        notes: document.getElementById('expNotes').value.trim()
+      });
+      await saveData();
+      document.getElementById('expenseForm').reset();
+      document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
+    };
+
+    window.deleteExpense = async (idx) => { db.expenses.splice(idx, 1); await saveData(); };
+
+    // --- 7. LOANS & ADVANCES ---
+    function renderLoans() {
+      const tbody = document.getElementById('loanTableBody');
+      const curr = db.settings.currency || '₹';
+      tbody.innerHTML = (db.loans || []).map((ln, idx) => {
+        const emp = db.employees.find(e => e.id == ln.empId);
+        const badge = ln.balance > 0 ? `<span class="run-badge" style="background:#fef3c7; color:#92400e;">Active</span>` : `<span class="run-badge run-locked">Settled</span>`;
+        return `<tr><td>${ln.date}</td><td><strong>${emp ? emp.name : 'Unknown'}</strong></td><td>${curr}${Number(ln.amount).toLocaleString()}</td><td>${curr}${Number(ln.emi).toLocaleString()}/mo</td><td><strong>${curr}${Number(ln.balance).toLocaleString()}</strong></td><td>${badge}</td><td><button class="btn-danger" onclick="deleteLoan(${idx})">Remove</button></td></tr>`;
+      }).join('');
+    }
+
+    document.getElementById('loanForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const amt = Number(document.getElementById('loanAmount').value);
+      if (!db.loans) db.loans = [];
+      db.loans.push({
+        id: Date.now(), empId: Number(document.getElementById('loanEmpSelect').value),
+        amount: amt, emi: Number(document.getElementById('loanEmi').value), balance: amt,
+        date: document.getElementById('loanDate').value, notes: document.getElementById('loanNotes').value.trim()
+      });
+      await saveData();
+      document.getElementById('loanForm').reset();
+    };
+
+    window.deleteLoan = async (idx) => { db.loans.splice(idx, 1); await saveData(); };
+
+    // --- 8. COMPANY ASSETS ---
+    function renderAssets() {
+      const tbody = document.getElementById('assetTableBody');
+      const curr = db.settings.currency || '₹';
+      tbody.innerHTML = (db.assets || []).map((a, idx) => {
+        const emp = db.employees.find(e => e.id == a.empId);
+        const st = a.returned ? `<span class="run-badge run-locked">Returned</span>` : `<span class="run-badge" style="background:#fee2e2; color:#991b1b;">In Use</span>`;
+        return `<tr><td><strong>${a.serial}</strong></td><td>${a.name}</td><td>${emp ? emp.name : 'Unknown'}</td><td>${a.date}</td><td>${curr}${Number(a.value).toLocaleString()}</td><td>${st}</td><td><button class="btn-outline" style="padding:3px 7px; font-size:11px;" onclick="toggleAssetReturn(${idx})">${a.returned ? 'Re-issue' : 'Mark Returned'}</button> <button class="btn-danger" onclick="deleteAsset(${idx})">✕</button></td></tr>`;
+      }).join('');
+    }
+
+    document.getElementById('assetForm').onsubmit = async (e) => {
+      e.preventDefault();
+      if (!db.assets) db.assets = [];
+      db.assets.push({
+        id: Date.now(), empId: Number(document.getElementById('assetEmpSelect').value),
+        name: document.getElementById('assetName').value.trim(), serial: document.getElementById('assetSerial').value.trim(),
+        value: Number(document.getElementById('assetValue').value) || 0, date: document.getElementById('assetDate').value, returned: false
+      });
+      await saveData();
+      document.getElementById('assetForm').reset();
+    };
+
+    window.toggleAssetReturn = async (idx) => { db.assets[idx].returned = !db.assets[idx].returned; await saveData(); };
+    window.deleteAsset = async (idx) => { db.assets.splice(idx, 1); await saveData(); };
+
+    // --- 9. PAYROLL ENGINE & STATUTORY EXPORTS (EPF ECR & ESIC) ---
+    function calculateMonthlyPayroll() {
+      const monthStr = document.getElementById('payrollMonth').value;
+      if (!monthStr) return;
+
+      const stdDays = Number(document.getElementById('payrollStandardDays').value) || 30;
+      const s = db.settings;
+      const curr = s.currency || '₹';
+
+      const isLocked = !!(db.lockedRuns && db.lockedRuns[monthStr]);
+      const badge = document.getElementById('runStatusBadge');
+      badge.textContent = isLocked ? '🔒 Locked Run' : 'Draft Run';
+      badge.className = isLocked ? 'run-badge run-locked' : 'run-badge';
+
+      let totalGross = 0, totalDeductions = 0, totalNet = 0, totalEmployer = 0, totalCTC = 0;
+      const deptPeriodTotals = {};
+      currentPayrollCache = [];
+      const tbody = document.getElementById('payrollTableBody');
+      tbody.innerHTML = '';
+
+      db.employees.filter(e => e.status !== 'Resigned').forEach(emp => {
+        let lopDays = 0;
+        db.leaves.filter(l => l.empId === emp.id && l.type === 'Loss of Pay' && l.from.startsWith(monthStr)).forEach(l => {
+          lopDays += getLeaveDaysCount(l.from, l.to);
+        });
+        db.attendance.filter(a => a.empId === emp.id && a.date.startsWith(monthStr)).forEach(a => {
+          if (a.status === 'Absent') lopDays += 1;
+          if (a.status === 'Half Day') lopDays += 0.5;
+        });
+
+        const paidDays = Math.max(0, stdDays - lopDays);
+        const basic = emp.basicSalary || 0, hra = emp.hra || 0, conv = emp.conveyance || 0, spec = emp.specialAllowance || 0;
+        const grossFull = basic + hra + conv + spec;
+        const lopDeduction = Math.round((grossFull / stdDays) * lopDays);
+        const earnedBaseGross = Math.max(0, grossFull - lopDeduction);
+
+        const adjKey = `${monthStr}_${emp.id}`;
+        const adj = db.payrollAdjustments[adjKey] || { bonus: 0, otHours: 0, customDeduction: 0, remarks: '' };
+        const otPay = Math.round((grossFull / (stdDays * 8)) * (adj.otHours || 0) * (s.otMultiplier || 1.5));
+        const bonusPay = Number(adj.bonus) || 0;
+        const customDed = Number(adj.customDeduction) || 0;
+
+        // Approved Reimbursements for month
+        const reimbPay = (db.expenses || []).filter(x => x.empId === emp.id && x.date.startsWith(monthStr)).reduce((sum, x) => sum + x.amount, 0);
+
+        const activeLoan = (db.loans || []).find(ln => ln.empId === emp.id && ln.balance > 0);
+        const loanEmiDed = activeLoan ? Math.min(activeLoan.balance, activeLoan.emi) : 0;
+
+        const totalEarnedGross = earnedBaseGross + otPay + bonusPay;
+        const earnedBasic = Math.max(0, Math.round((basic / stdDays) * paidDays));
+        const epfEmployee = Math.round(earnedBasic * (s.epfRate / 100));
+        const esiEmployee = grossFull <= s.esiLimit ? Math.round(totalEarnedGross * (s.esiRate / 100)) : 0;
+        const pt = Number(s.defaultPT) || 0;
+        const tds = Number(emp.tds) || 0;
+
+        const empTotalDeductions = epfEmployee + esiEmployee + pt + tds + customDed + loanEmiDed;
+        const netPay = Math.max(0, totalEarnedGross + reimbPay - empTotalDeductions);
+
+        const epfEmployer = Math.round(earnedBasic * ((s.employerEpfRate || 12) / 100));
+        const esiEmployer = grossFull <= s.esiLimit ? Math.round(totalEarnedGross * ((s.employerEsiRate || 3.25) / 100)) : 0;
+        const ctc = totalEarnedGross + reimbPay + epfEmployer + esiEmployer;
+
+        totalGross += totalEarnedGross;
+        totalDeductions += empTotalDeductions;
+        totalNet += netPay;
+        totalEmployer += (epfEmployer + esiEmployer);
+        totalCTC += ctc;
+
+        const dept = emp.department || 'General';
+        deptPeriodTotals[dept] = (deptPeriodTotals[dept] || 0) + totalEarnedGross;
+
+        currentPayrollCache.push({
+          empId: emp.id, name: emp.name, department: emp.department, role: emp.role,
+          bankAcc: emp.bankAcc, bankIfsc: emp.bankIfsc, bankName: emp.bankName,
+          pan: emp.pan, uan: emp.uan, esic: emp.esic, monthStr, stdDays, paidDays, lopDays,
+          basic, earnedBasic, hra, conv, spec, earnedBaseGross, otPay, otHours: adj.otHours || 0,
+          bonusPay, reimbPay, totalEarnedGross, lopDeduction, epfEmployee, esiEmployee, pt, tds,
+          loanEmiDed, customDed, empTotalDeductions, netPay, epfEmployer, esiEmployer, ctc
+        });
+
+        const addTot = bonusPay + otPay + reimbPay;
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${emp.name}</strong> (#${emp.id})<br><span style="font-size:11px; color:var(--text-muted);">${emp.department}</span></td>
+            <td>${paidDays} / <span style="color:var(--danger);">${lopDays}</span></td>
+            <td>${curr}${earnedBaseGross.toLocaleString()}</td>
+            <td>${addTot > 0 ? `<span style="color:var(--success);">+${curr}${addTot.toLocaleString()}</span>` : '-'}</td>
+            <td>${curr}${epfEmployee} / ${esiEmployee > 0 ? curr + esiEmployee : 'Ex'}</td>
+            <td>${curr}${(pt + tds + loanEmiDed + customDed).toLocaleString()}</td>
+            <td><strong style="color:var(--success); font-size:13.5px;">${curr}${netPay.toLocaleString()}</strong></td>
+            <td><span style="font-size:11px; color:var(--text-muted);">PF:${curr}${epfEmployer} | ESI:${curr}${esiEmployer}</span></td>
+            <td>
+              <div style="display:flex; gap:5px;">
+                <button class="btn-outline" style="padding:3px 7px; font-size:11px;" onclick="openAdjustmentModal(${emp.id})">✏️ Adjust</button>
+                <button class="btn-outline" style="padding:3px 7px; font-size:11px;" onclick="viewPayrollSlip(${emp.id})">📄 Slip</button>
+              </div>
+            </td>
+          </tr>`;
+      });
+
+      document.getElementById('statGross').textContent = `${curr}${totalGross.toLocaleString()}`;
+      document.getElementById('statDeductions').textContent = `${curr}${totalDeductions.toLocaleString()}`;
+      document.getElementById('statNet').textContent = `${curr}${totalNet.toLocaleString()}`;
+      document.getElementById('statCTC').textContent = `${curr}${totalCTC.toLocaleString()}`;
+
+      document.getElementById('payrollRunDonut1').innerHTML = createDonutChartHTML([
+        { label: 'Net Disbursed', value: totalNet, formatted: `${curr}${totalNet.toLocaleString()}`, color: '#16a34a' },
+        { label: 'Deductions', value: totalDeductions, formatted: `${curr}${totalDeductions.toLocaleString()}`, color: '#dc2626' },
+        { label: 'Employer Share', value: totalEmployer, formatted: `${curr}${totalEmployer.toLocaleString()}`, color: '#0284c7' }
+      ], `${curr}${(totalCTC / 1000).toFixed(1)}k`, 'Period CTC');
+
+      const palette = ['#2563eb', '#7c3aed', '#db2777', '#0d9488', '#d97706'];
+      const deptSegs = Object.keys(deptPeriodTotals).map((d, i) => ({
+        label: d, value: deptPeriodTotals[d], formatted: `${curr}${deptPeriodTotals[d].toLocaleString()}`, color: palette[i % palette.length]
+      }));
+      document.getElementById('payrollRunDonut2').innerHTML = createDonutChartHTML(
+        deptSegs.length ? deptSegs : [{ label: 'Empty', value: 0, formatted: `${curr}0`, color: '#94a3b8' }],
+        `${curr}${(totalGross / 1000).toFixed(1)}k`, 'Gross'
+      );
+    }
+
+    // Statutory EPFO ECR V2.0 Text Export (#~# Delimiter)
+    function exportEpfECR() {
+      if (!currentPayrollCache.length) return alert('Compute payroll first!');
+      const month = document.getElementById('payrollMonth').value;
+      let lines = [];
+      currentPayrollCache.forEach(r => {
+        const uan = r.uan || '100000000000';
+        const epfWages = r.earnedBasic;
+        const epsWages = Math.min(epfWages, 15000);
+        const edliWages = epsWages;
+        const eeShare = r.epfEmployee;
+        const epsShare = Math.round(epsWages * 0.0833);
+        const erDiff = Math.max(0, eeShare - epsShare);
+        const ncpDays = r.lopDays;
+        lines.push(`${uan}#~#${r.name}#~#${r.totalEarnedGross}#~#${epfWages}#~#${epsWages}#~#${edliWages}#~#${eeShare}#~#${epsShare}#~#${erDiff}#~#${ncpDays}#~#0`);
+      });
+      downloadFile(lines.join('\n'), `EPF_ECR_${month}.txt`, 'text/plain');
+    }
+
+    // Statutory ESIC Return CSV
+    function exportEsicCSV() {
+      if (!currentPayrollCache.length) return alert('Compute payroll first!');
+      const month = document.getElementById('payrollMonth').value;
+      let csv = "IP Number (10 Digits),IP Name,No of Days for which wages paid/payable,Total Monthly Wages,Reason Code for Zero workings days,Last Working Day\n";
+      currentPayrollCache.filter(r => r.esiEmployee > 0).forEach(r => {
+        csv += `"${r.esic || '0000000000'}","${r.name}",${r.paidDays},${r.totalEarnedGross},0,""\n`;
+      });
+      downloadFile(csv, `ESIC_Challan_${month}.csv`, 'text/csv');
+    }
+
+    function openAdjustmentModal(empId) {
+      const monthStr = document.getElementById('payrollMonth').value;
+      const emp = db.employees.find(e => e.id === empId);
+      const adj = db.payrollAdjustments[`${monthStr}_${empId}`] || { bonus: 0, otHours: 0, customDeduction: 0, remarks: '' };
+      document.getElementById('adjEmpId').value = empId;
+      document.getElementById('adjModalTitle').textContent = `Adjust Payroll: ${emp.name} (${monthStr})`;
+      document.getElementById('adjBonus').value = adj.bonus || 0;
+      document.getElementById('adjOtHours').value = adj.otHours || 0;
+      document.getElementById('adjCustomDeduction').value = adj.customDeduction || 0;
+      document.getElementById('adjRemarks').value = adj.remarks || '';
+      document.getElementById('adjustmentModal').style.display = 'flex';
+    }
+
+    function closeAdjustmentModal() { document.getElementById('adjustmentModal').style.display = 'none'; }
+
+    document.getElementById('adjForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const monthStr = document.getElementById('payrollMonth').value;
+      const empId = document.getElementById('adjEmpId').value;
+      db.payrollAdjustments[`${monthStr}_${empId}`] = {
+        bonus: Number(document.getElementById('adjBonus').value) || 0,
+        otHours: Number(document.getElementById('adjOtHours').value) || 0,
+        customDeduction: Number(document.getElementById('adjCustomDeduction').value) || 0,
+        remarks: document.getElementById('adjRemarks').value.trim()
+      };
+      await saveData();
+      closeAdjustmentModal();
+      calculateMonthlyPayroll();
+    };
+
+    async function lockAndSavePayrollRun() {
+      const monthStr = document.getElementById('payrollMonth').value;
+      if (!monthStr || !currentPayrollCache.length) return;
+      if (!confirm(`Lock payroll for ${monthStr}?`)) return;
+      if (!db.lockedRuns[monthStr]) {
+        currentPayrollCache.forEach(rec => {
+          if (rec.loanEmiDed > 0) {
+            const loan = (db.loans || []).find(ln => ln.empId === rec.empId && ln.balance > 0);
+            if (loan) loan.balance = Math.max(0, loan.balance - rec.loanEmiDed);
+          }
+        });
+      }
+      db.lockedRuns[monthStr] = { lockedAt: new Date().toISOString(), records: currentPayrollCache };
+      await saveData();
+      calculateMonthlyPayroll();
+    }
+
+    function exportBankCSV() {
+      const month = document.getElementById('payrollMonth').value;
+      let csv = "Employee ID,Beneficiary Name,Bank Account Number,IFSC Code,Bank Name,Net Amount,Payment Narration\n";
+      currentPayrollCache.forEach(r => {
+        csv += `"${r.empId}","${r.name}","${r.bankAcc || ''}","${r.bankIfsc || ''}","${r.bankName || ''}","${r.netPay}","Salary ${month}"\n`;
+      });
+      downloadFile(csv, `Bank_Transfer_${month}.csv`, 'text/csv');
+    }
+
+    function exportPayrollRegisterCSV() {
+      const month = document.getElementById('payrollMonth').value;
+      let csv = "ID,Name,Department,Role,PaidDays,LOP,Basic,HRA,Conv,Special,OT,Bonus,Reimbursements,TotalGross,EPF_EE,ESI_EE,PT,TDS,LoanEMI,CustomDed,NetPay,EPF_ER,ESI_ER,CTC\n";
+      currentPayrollCache.forEach(r => {
+        csv += `"${r.empId}","${r.name}","${r.department}","${r.role}",${r.paidDays},${r.lopDays},${r.basic},${r.hra},${r.conv},${r.spec},${r.otPay},${r.bonusPay},${r.reimbPay},${r.totalEarnedGross},${r.epfEmployee},${r.esiEmployee},${r.pt},${r.tds},${r.loanEmiDed},${r.customDed},${r.netPay},${r.epfEmployer},${r.esiEmployer},${r.ctc}\n`;
+      });
+      downloadFile(csv, `Payroll_Register_${month}.csv`, 'text/csv');
+    }
+
+    function downloadFile(content, fileName, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = fileName; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // --- 10. EXIT & FULL AND FINAL (FnF) SETTLEMENT ENGINE ---
+    function calculateFnFPreview() {
+      const empId = Number(document.getElementById('fnfEmpSelect').value);
+      const box = document.getElementById('fnfPreviewArea');
+      if (!empId) { box.innerHTML = ''; return; }
+
+      const emp = db.employees.find(e => e.id === empId);
+      const s = db.settings;
+      const curr = s.currency || '₹';
+      const exitDate = document.getElementById('fnfExitDate').value;
+      const payableDays = Number(document.getElementById('fnfPayableDays').value) || 0;
+      const recoveryDed = Number(document.getElementById('fnfRecoveryDed').value) || 0;
+
+      // Tenure calculation
+      const joinD = emp.joinDate ? new Date(emp.joinDate) : new Date();
+      const exitD = exitDate ? new Date(exitDate) : new Date();
+      const yearsServed = Math.max(0, ((exitD - joinD) / (1000 * 60 * 60 * 24 * 365.25))).toFixed(1);
+
+      // Pro-rata unpaid salary
+      const proRataGross = Math.round(((emp.grossMonthly || emp.basicSalary) / 30) * payableDays);
+
+      // Earned Leave Encashment
+      let usedEL = 0;
+      db.leaves.filter(l => l.empId === emp.id && l.type === 'Earned Leave').forEach(l => {
+        usedEL += getLeaveDaysCount(l.from, l.to);
+      });
+      const unusedEL = Math.max(0, (s.quotaEL ?? 15) - usedEL);
+      const leaveEncashment = Math.round(((emp.basicSalary || 0) / 30) * unusedEL);
+
+      // Gratuity (15/26 * Basic * Years if >= 5 years)
+      const gratuity = yearsServed >= 5 ? Math.round(((emp.basicSalary || 0) * 15 * Math.round(yearsServed)) / 26) : 0;
+
+      // Pending Loan Balance
+      const pendingLoans = (db.loans || []).filter(ln => ln.empId === emp.id && ln.balance > 0).reduce((sum, ln) => sum + ln.balance, 0);
+
+      // Unreturned Assets
+      const unreturnedAssets = (db.assets || []).filter(a => a.empId === emp.id && !a.returned);
+
+      const netFnF = proRataGross + leaveEncashment + gratuity - pendingLoans - recoveryDed;
+
+      box.innerHTML = `
+        <div class="card" style="background:var(--th-bg); margin-bottom:0;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h4 style="margin:0;">FnF Computation Summary: ${emp.name} (Tenure: ${yearsServed} yrs)</h4>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-outline" onclick="printFnFStatement(${emp.id}, '${exitDate}', ${yearsServed}, ${proRataGross}, ${unusedEL}, ${leaveEncashment}, ${gratuity}, ${pendingLoans}, ${recoveryDed}, ${netFnF})">🖨️ Print FnF Statement</button>
+              <button class="btn-danger" onclick="markEmployeeResigned(${emp.id})">Mark as Resigned / Exited</button>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div><strong>Pro-rata Salary (${payableDays}d):</strong> +${curr}${proRataGross.toLocaleString()}</div>
+            <div><strong>EL Encashment (${unusedEL}d):</strong> +${curr}${leaveEncashment.toLocaleString()}</div>
+            <div><strong>Gratuity (${yearsServed >= 5 ? 'Eligible' : '< 5 yrs'}):</strong> +${curr}${gratuity.toLocaleString()}</div>
+            <div style="color:var(--danger);"><strong>Loan Balance Ded.:</strong> -${curr}${pendingLoans.toLocaleString()}</div>
+            <div style="color:var(--danger);"><strong>Recovery / Notice Ded.:</strong> -${curr}${recoveryDed.toLocaleString()}</div>
+            <div><strong>Unreturned Assets:</strong> ${unreturnedAssets.length} items</div>
+          </div>
+          <div style="padding:12px; background:var(--card-bg); border-radius:6px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700;">Net Full & Final Settlement Payable:</span>
+            <span style="font-size:20px; font-weight:800; color:var(--success);">${curr}${netFnF.toLocaleString()}</span>
+          </div>
+        </div>`;
+    }
+
+    window.markEmployeeResigned = async (empId) => {
+      const emp = db.employees.find(e => e.id === empId);
+      if (!emp || !confirm(`Mark ${emp.name} as Resigned?`)) return;
+      emp.status = 'Resigned';
+      await saveData();
+      calculateFnFPreview();
+    };
+
+    window.printFnFStatement = (empId, exitDate, yrs, proRata, elDays, elAmt, grat, loans, recov, net) => {
+      const emp = db.employees.find(e => e.id === empId);
+      const s = db.settings;
+      const curr = s.currency || '₹';
+      document.getElementById('letterSelectorBar').style.display = 'none';
+      document.getElementById('payslipPrintArea').innerHTML = `
+        <h2 style="margin:0;">${s.companyName}</h2>
+        <div style="font-size:12px; color:#475569; border-bottom:2px solid #0f172a; padding-bottom:10px; margin-bottom:16px;">FULL & FINAL SETTLEMENT STATEMENT</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px; margin-bottom:16px;">
+          <div><strong>Employee:</strong> ${emp.name} (#${emp.id})</div>
+          <div><strong>Department:</strong> ${emp.department} (${emp.role})</div>
+          <div><strong>Joining Date:</strong> ${emp.joinDate}</div>
+          <div><strong>Last Working Date:</strong> ${exitDate} (${yrs} yrs)</div>
+        </div>
+        <table style="width:100%; border:1px solid #0f172a; margin-bottom:16px;">
+          <thead><tr style="background:#f1f5f9;"><th>Particulars</th><th>Credits (+)</th><th>Recoveries (-)</th></tr></thead>
+          <tbody>
+            <tr><td>Unpaid Salary Days</td><td>${curr}${proRata.toLocaleString()}</td><td>-</td></tr>
+            <tr><td>Earned Leave Encashment (${elDays} days)</td><td>${curr}${elAmt.toLocaleString()}</td><td>-</td></tr>
+            <tr><td>Statutory Gratuity</td><td>${curr}${grat.toLocaleString()}</td><td>-</td></tr>
+            <tr><td>Outstanding Loan / Advance Balance</td><td>-</td><td>${curr}${loans.toLocaleString()}</td></tr>
+            <tr><td>Notice / Asset Damage Recovery</td><td>-</td><td>${curr}${recov.toLocaleString()}</td></tr>
+          </tbody>
+        </table>
+        <div style="padding:12px; background:#f1f5f9; display:flex; justify-content:space-between; font-weight:bold; font-size:16px;">
+          <span>Net Full & Final Settlement Disbursal:</span>
+          <span>${curr}${net.toLocaleString()}</span>
+        </div>
+        <div style="margin-top:50px; display:flex; justify-content:space-between; font-size:12px;">
+          <div>_______________________<br>HR / Finance Signatory</div>
+          <div>_______________________<br>Employee Signatory</div>
+        </div>`;
+      document.getElementById('payslipModal').style.display = 'flex';
+    };
+
+    // --- PAYSLIP VIEW ---
+    window.viewPayrollSlip = function(empId) {
+      const r = currentPayrollCache.find(x => x.empId === empId);
+      if (!r) return;
+      const s = db.settings;
+      const curr = s.currency || '₹';
+      document.getElementById('letterSelectorBar').style.display = 'none';
+
+      document.getElementById('payslipPrintArea').innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom: 2px solid #0f172a; padding-bottom:12px; margin-bottom:16px;">
+          <div>
+            <h2 style="margin:0; font-size:20px;">${s.companyName}</h2>
+            <div style="font-size:12px; color:#475569;">${s.address}</div>
+            <div style="font-size:12px; color:#475569;">${s.registrationNo} ${s.taxId ? '| ' + s.taxId : ''}</div>
+          </div>
+          ${s.logo ? `<img src="${s.logo}" style="max-height:50px;">` : ''}
+        </div>
+        <div style="text-align:center; font-weight:bold; font-size:14px; text-decoration:underline; margin-bottom:14px;">
+          PAYSLIP FOR ${r.monthStr.toUpperCase()}
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; font-size:12px; margin-bottom:16px; gap:6px;">
+          <div><strong>Employee ID:</strong> #${r.empId}</div><div><strong>Paid Days / LOP:</strong> ${r.paidDays} / ${r.lopDays}</div>
+          <div><strong>Employee Name:</strong> ${r.name}</div><div><strong>Designation:</strong> ${r.role}</div>
+          <div><strong>Department:</strong> ${r.department}</div><div><strong>PAN:</strong> ${r.pan || 'N/A'}</div>
+          <div><strong>EPF UAN:</strong> ${r.uan || 'N/A'}</div><div><strong>Bank Acc:</strong> ${r.bankAcc || 'N/A'}</div>
+        </div>
+        <table style="width:100%; border:1px solid #0f172a; margin-bottom:16px;">
+          <thead><tr style="background:#f1f5f9;"><th style="width:50%;">Earnings</th><th style="width:50%;">Deductions</th></tr></thead>
+          <tbody>
+            <tr><td>Basic Salary: <strong>${curr}${r.basic.toLocaleString()}</strong></td><td>EPF (${s.epfRate}%): <strong>${curr}${r.epfEmployee.toLocaleString()}</strong></td></tr>
+            <tr><td>HRA: <strong>${curr}${r.hra.toLocaleString()}</strong></td><td>ESI (${s.esiRate}%): <strong>${r.esiEmployee > 0 ? curr + r.esiEmployee.toLocaleString() : 'Exempt'}</strong></td></tr>
+            <tr><td>Conveyance & Special: <strong>${curr}${(r.conv + r.spec).toLocaleString()}</strong></td><td>PT & TDS: <strong>${curr}${(r.pt + r.tds).toLocaleString()}</strong></td></tr>
+            ${r.bonusPay + r.otPay > 0 ? `<tr><td>Bonus & Overtime: <strong>${curr}${(r.bonusPay + r.otPay).toLocaleString()}</strong></td><td>-</td></tr>` : ''}
+            ${r.reimbPay > 0 ? `<tr><td>Expense Reimbursements: <strong>${curr}${r.reimbPay.toLocaleString()}</strong></td><td>-</td></tr>` : ''}
+            ${r.loanEmiDed + r.customDed > 0 ? `<tr><td>-</td><td>Loan EMI / Other Ded: <span style="color:red;">-${curr}${(r.loanEmiDed + r.customDed).toLocaleString()}</span></td></tr>` : ''}
+            <tr style="background:#f8fafc; font-weight:bold;">
+              <td>Total Gross (+Reimb): ${curr}${(r.totalEarnedGross + r.reimbPay).toLocaleString()}</td>
+              <td>Total Deductions: ${curr}${r.empTotalDeductions.toLocaleString()}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="padding:10px; background:#f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:bold;">Net Take-Home Disbursal:</span>
+          <span style="font-size:18px; font-weight:bold; color:#166534;">${curr}${r.netPay.toLocaleString()}</span>
+        </div>
+        <div style="margin-top:40px; display:flex; justify-content:space-between; font-size:12px;">
+          <div>_______________________<br>Employer Signature</div>
+          <div>_______________________<br>Employee Signature</div>
+        </div>`;
+      document.getElementById('payslipModal').style.display = 'flex';
+    };
+
+    window.closePayslip = function() { document.getElementById('payslipModal').style.display = 'none'; };
+
+    function filterEmployeeDirectory() {
+      const q = document.getElementById('searchEmp').value.toLowerCase();
+      const dept = document.getElementById('filterDept').value.toLowerCase();
+      document.querySelectorAll('#empTableBody tr').forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = (text.includes(q) && (!dept || text.includes(dept))) ? '' : 'none';
+      });
+    }
+
+    document.getElementById('searchEmp').oninput = filterEmployeeDirectory;
+    document.getElementById('filterDept').onchange = filterEmployeeDirectory;
+  </script>
+</body>
+</html>
