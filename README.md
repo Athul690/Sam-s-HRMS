@@ -1,7 +1,7 @@
-# 🏢 Local-First Browser HRMS & Payroll Suite
+# 🏢 Sam's HRMS : A Local-First Browser HRMS & Payroll Suite
 
 A complete, self-contained **Human Resource Management System (HRMS) & Statutory Payroll Suite** that runs entirely inside your web browser. 
-
+And the best thing, its Completely free 
 Built with zero external dependencies, no server backends, and no cloud databases—everything is stored directly on your local hard drive as readable, unencrypted files using the native **File System Access API**.
 
 ---
@@ -35,7 +35,7 @@ Built with zero external dependencies, no server backends, and no cloud database
 ### ⏱️ Attendance & Shift Roster
 - Daily attendance logger with Check-In/Check-Out times and auto-calculated work hours.
 - **Temporary Shift Override:** Override an employee's default shift for specific operational days.
-- **⚡ Mark All Present:** Fast-track daily logging for your entire active workforce.
+- **Mark All Present:** Fast-track daily logging for your entire active workforce.
 - **Monthly Matrix View:** Full calendar grid (Days 1–31) showing status (`P`, `A`, `HD`, `L`) at a glance.
 
 ### 🏖️ Leave Management & Quota Enforcement
@@ -88,3 +88,7 @@ A modern Chromium-based desktop browser:
 1. Clone or download this repository:
    ```bash
    git clone https://github.com/Athul690/Sam-s-HRMS.git
+
+
+
+And before anyone goes sherlock Homes on the code. The code is 90 % AI, I only added some tweaks to the code. I tried to add all things i wanted when i started work.
