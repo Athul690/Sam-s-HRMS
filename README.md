@@ -87,4 +87,4 @@ A modern Chromium-based desktop browser:
 
 1. Clone or download this repository:
    ```bash
-   git clone [https://github.com/Athul690/Sam-s-HRMS.git]([https://github.com/your-username/local-hrms.git](https://github.com/Athul690/Sam-s-HRMS.git))
+   git clone https://github.com/Athul690/Sam-s-HRMS.git
