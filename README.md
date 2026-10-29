@@ -114,6 +114,7 @@ A modern Chromium-based desktop browser:
    git clone https://github.com/Athul690/Sam-s-HRMS.git
 
 2. Open the index.html using any chromium based browser.
+3. Allow Files Access, If not prompted click on "Allow Files Access"
 
 And before anyone goes sherlock Homes on the code. The code is 90 % AI, I only added some tweaks to the code. I tried to add all things i wanted when i started work.
 
